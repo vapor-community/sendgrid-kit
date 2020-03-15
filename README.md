@@ -11,11 +11,11 @@ Add the dependency to Package.swift:
 ~~~~swift
 dependencies: [
 	...
-	.package(url: "https://github.com/vapor-community/sendgrit-kit.git", from: "1.0.0")
+	.package(url: "https://github.com/vapor-community/SendGridKit.git", from: "1.0.0")
 ],
 targets: [
     .target(name: "App", dependencies: [
-        .product(name: "SendGridKit", package: "sendgrid-kit"),
+        .product(name: "SendGridKit", package: "SendGridKit"),
     ]),
 ~~~~
 
