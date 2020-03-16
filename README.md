@@ -1,7 +1,6 @@
 # SendGridKit
 
 ![Swift](http://img.shields.io/badge/swift-5.2-brightgreen.svg)
-![Vapor](http://img.shields.io/badge/vapor-4.0-brightgreen.svg)
 
 SendGridKit is a Swift package used to communicate with the SendGrid API for Server Side Swift Apps.
 
@@ -11,11 +10,11 @@ Add the dependency to Package.swift:
 ~~~~swift
 dependencies: [
 	...
-	.package(url: "https://github.com/vapor-community/SendGridKit.git", from: "1.0.0")
+	.package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "1.0.0")
 ],
 targets: [
     .target(name: "App", dependencies: [
-        .product(name: "SendGridKit", package: "SendGridKit"),
+        .product(name: "SendGridKit", package: "sendgrid-kit"),
     ]),
 ~~~~
 

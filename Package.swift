@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "SendGridKit",
+    name: "sendgrid-kit",
     platforms: [
        .macOS(.v10_15),
     ],
