@@ -15,3 +15,9 @@ public struct EmailAddress: Codable {
         self.name = name
     }
 }
+
+extension EmailAddress: ExpressibleByStringLiteral {
+    public init(stringLiteral email: StringLiteralType) {
+        self.init(email: email)
+    }
+}

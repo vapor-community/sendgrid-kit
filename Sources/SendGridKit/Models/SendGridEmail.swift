@@ -5,7 +5,7 @@ public struct SendGridEmail: Codable {
     /// An array of messages and their metadata. Each object within personalizations can be thought of as an envelope - it defines who should receive an individual message and how that message should be handled.
     public var personalizations: [Personalization]
 
-    public var from: EmailAddress?
+    public var from: EmailAddress
 
     public var replyTo: EmailAddress?
     
@@ -53,7 +53,7 @@ public struct SendGridEmail: Codable {
     
     public init(
         personalizations: [Personalization],
-        from: EmailAddress? = nil,
+        from: EmailAddress,
         replyTo: EmailAddress? = nil,
         replyToList: [EmailAddress]? = nil,
         subject: String? = nil,

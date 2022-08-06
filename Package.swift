@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.5
 import PackageDescription
 
 let package = Package(
@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "SendGridKit", targets: ["SendGridKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.0.0"),
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
     ],
     targets: [
         .target(name: "SendGridKit", dependencies: [
