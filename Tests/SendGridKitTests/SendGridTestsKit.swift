@@ -25,7 +25,7 @@ class SendGridKitTests: XCTestCase {
         // TODO: Replace to address with the email address you'd like to recieve your test email!
         let personalization = Personalization(to: ["TO-ADDRESS"])
         
-        // TODO: Replace from address with the email address associated with you verified Sender Identity!
+        // TODO: Replace from address with the email address associated with your verified Sender Identity!
         let email = SendGridEmail(
             personalizations: [personalization],
             from: "FROM-ADDRESS",
