@@ -49,30 +49,34 @@ public struct SendGridClient {
         
         let bodyString = String(decoding: bodyData, as: UTF8.self)
         
-        let request = try HTTPClient.Request(url: apiURL,
-                                             method: .POST,
-                                             headers: headers,
-                                             body: .string(bodyString))
+        let request = try HTTPClient.Request(
+            url: apiURL,
+            method: .POST,
+            headers: headers,
+            body: .string(bodyString)
+        )
         
-        return httpClient.execute(request: request,
-                                  eventLoop: .delegate(on: eventLoop))
-            .flatMap { response in
-                switch response.status {
-                case .ok, .accepted:
-                    return eventLoop.makeSucceededFuture(())
-                default:
-                    
-                    // JSONDecoder will handle empty body by throwing decoding error
-                    let byteBuffer = response.body ?? ByteBuffer(.init())
-                    let responseData = Data(byteBuffer.readableBytesView)
-                    
-                    do {
-                        let error = try self.decoder.decode(SendGridError.self, from: responseData)
-                        return eventLoop.makeFailedFuture(error)
-                    } catch  {
-                        return eventLoop.makeFailedFuture(error)
-                    }
+        return httpClient.execute(
+            request: request,
+            eventLoop: .delegate(on: eventLoop)
+        )
+        .flatMap { response in
+            switch response.status {
+            case .ok, .accepted:
+                return eventLoop.makeSucceededFuture(())
+            default:
+                
+                // JSONDecoder will handle empty body by throwing decoding error
+                let byteBuffer = response.body ?? ByteBuffer(.init())
+                let responseData = Data(byteBuffer.readableBytesView)
+                
+                do {
+                    let error = try self.decoder.decode(SendGridError.self, from: responseData)
+                    return eventLoop.makeFailedFuture(error)
+                } catch  {
+                    return eventLoop.makeFailedFuture(error)
                 }
+            }
         }
     }
 }

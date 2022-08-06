@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TrackingSettings: Encodable {
+public struct TrackingSettings: Codable {
     /// Allows you to track whether a recipient clicked a link in your email.
     public var clickTracking: ClickTracking?
     
@@ -13,10 +13,12 @@ public struct TrackingSettings: Encodable {
     /// Allows you to enable tracking provided by Google Analytics.
     public var ganalytics: GoogleAnalytics?
     
-    public init(clickTracking: ClickTracking? = nil,
-                openTracking: OpenTracking? = nil,
-                subscriptionTracking: SubscriptionTracking? = nil,
-                ganalytics: GoogleAnalytics? = nil) {
+    public init(
+        clickTracking: ClickTracking? = nil,
+        openTracking: OpenTracking? = nil,
+        subscriptionTracking: SubscriptionTracking? = nil,
+        ganalytics: GoogleAnalytics? = nil
+    ) {
         self.clickTracking = clickTracking
         self.openTracking = openTracking
         self.subscriptionTracking = subscriptionTracking
@@ -30,50 +32,33 @@ public struct TrackingSettings: Encodable {
         case ganalytics
     }
     
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(clickTracking, forKey: .clickTracking)
-        try container.encode(openTracking, forKey: .openTracking)
-        try container.encode(subscriptionTracking, forKey: .subscriptionTracking)
-        try container.encode(ganalytics, forKey: .ganalytics)
-    }
-    
 }
 
-public struct ClickTracking: Encodable {
+public struct ClickTracking: Codable {
     /// Indicates if this setting is enabled.
-    public var enable: Bool?
+    public var enable: Bool
     
     /// Indicates if this setting should be included in the text/plain portion of your email.
-    public var enableText: Bool?
-    
-    public init(enable: Bool? = nil,
-                enableText: Bool? = nil) {
-        self.enable = enable
-        self.enableText = enableText
-    }
+    public var enableText: Bool
     
     private enum CodingKeys: String, CodingKey {
         case enable
         case enableText = "enable_text"
     }
     
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(enable, forKey: .enable)
-        try container.encode(enableText, forKey: .enableText)
-    }
 }
 
-public struct OpenTracking: Encodable {
+public struct OpenTracking: Codable {
     /// Indicates if this setting is enabled.
-    public var enable: Bool?
+    public var enable: Bool
     
     /// Allows you to specify a substitution tag that you can insert in the body of your email at a location that you desire. This tag will be replaced by the open tracking pixel.
     public var substitutionTag: String?
     
-    public init(enable: Bool? = nil,
-                substitutionTag: String? = nil) {
+    public init(
+        enable: Bool,
+        substitutionTag: String? = nil
+    ) {
         self.enable = enable
         self.substitutionTag = substitutionTag
     }
@@ -82,17 +67,12 @@ public struct OpenTracking: Encodable {
         case enable
         case substitutionTag = "substitution_tag"
     }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(enable, forKey: .enable)
-        try container.encode(substitutionTag, forKey: .substitutionTag)
-    }
+
 }
 
-public struct SubscriptionTracking: Encodable {
+public struct SubscriptionTracking: Codable {
     /// Indicates if this setting is enabled.
-    public var enable: Bool?
+    public var enable: Bool
     
     /// Text to be appended to the email, with the subscription tracking link. You may control where the link is by using the tag <% %>
     public var text: String?
@@ -103,12 +83,16 @@ public struct SubscriptionTracking: Encodable {
     /// A tag that will be replaced with the unsubscribe URL. for example: [unsubscribe_url]. If this parameter is used, it will override both the text and html parameters. The URL of the link will be placed at the substitution tag’s location, with no additional formatting.
     public var substitutionTag: String?
     
-    public init(enable: Bool? = nil,
-                text: String? = nil,
-                html: String? = nil) {
+    public init(
+        enable: Bool,
+        text: String? = nil,
+        html: String? = nil,
+        substitutionTag: String? = nil
+    ) {
         self.enable = enable
         self.text = text
         self.html = html
+        self.substitutionTag = substitutionTag
     }
     
     private enum CodingKeys: String, CodingKey {
@@ -117,19 +101,11 @@ public struct SubscriptionTracking: Encodable {
         case html
         case substitutionTag = "substitution_tag"
     }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(enable, forKey: .enable)
-        try container.encode(text, forKey: .text)
-        try container.encode(html, forKey: .html)
-        try container.encode(substitutionTag, forKey: .substitutionTag)
-    }
 }
 
-public struct GoogleAnalytics: Encodable {
+public struct GoogleAnalytics: Codable {
     /// Indicates if this setting is enabled.
-    public var enable: Bool?
+    public var enable: Bool
     
     /// Name of the referrer source. (e.g. Google, SomeDomain.com, or Marketing Email)
     public var utmSource: String?
@@ -146,12 +122,14 @@ public struct GoogleAnalytics: Encodable {
     /// The name of the campaign.
     public var utmCampaign: String?
     
-    public init(enable: Bool? = nil,
-                utmSource: String? = nil,
-                utmMedium: String? = nil,
-                utmTerm: String? = nil,
-                utmContent: String? = nil,
-                utmCampaign: String? = nil) {
+    public init(
+        enable: Bool,
+        utmSource: String? = nil,
+        utmMedium: String? = nil,
+        utmTerm: String? = nil,
+        utmContent: String? = nil,
+        utmCampaign: String? = nil
+    ) {
         self.enable = enable
         self.utmSource = utmSource
         self.utmMedium = utmMedium
@@ -169,12 +147,4 @@ public struct GoogleAnalytics: Encodable {
         case utmCampaign = "utm_campaign"
     }
     
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(enable, forKey: .enable)
-        try container.encode(utmSource, forKey: .utmSource)
-        try container.encode(utmMedium, forKey: .utmMedium)
-        try container.encode(utmContent, forKey: .utmContent)
-        try container.encode(utmCampaign, forKey: .utmCampaign)
-    }
 }

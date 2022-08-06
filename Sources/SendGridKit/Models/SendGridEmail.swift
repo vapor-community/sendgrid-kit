@@ -1,19 +1,22 @@
 import Foundation
 
-public struct SendGridEmail: Encodable {
+public struct SendGridEmail: Codable {
     
     /// An array of messages and their metadata. Each object within personalizations can be thought of as an envelope - it defines who should receive an individual message and how that message should be handled.
-    public var personalizations: [Personalization]?
+    public var personalizations: [Personalization]
 
     public var from: EmailAddress?
 
     public var replyTo: EmailAddress?
+    
+    /// An array of recipients who will receive replies and/or bounces.
+    public var replyToList: [EmailAddress]?
 
     /// The global, or “message level”, subject of your email. This may be overridden by personalizations[x].subject.
     public var subject: String?
     
     /// An array in which you may specify the content of your email.
-    public var content: [[String: String]]?
+    public var content: [EmailContent]?
 
     /// An array of objects in which you can specify any attachments you want to include.
     public var attachments: [EmailAttachment]?
@@ -21,9 +24,6 @@ public struct SendGridEmail: Encodable {
     /// The id of a template that you would like to use. If you use a template that contains a subject and content (either text or html), you do not need to specify those at the personalizations nor message level.
     public var templateId: String?
     
-    /// An object of key/value pairs that define block sections of code to be used as substitutions.
-    public var sections: [String: String]?
-
     /// An object containing key/value pairs of header names and the value to substitute for them. You must ensure these are properly encoded if they contain unicode characters. Must not be one of the reserved headers.
     public var headers: [String: String]?
 
@@ -51,31 +51,33 @@ public struct SendGridEmail: Encodable {
     /// Settings to determine how you would like to track the metrics of how your recipients interact with your email.
     public var trackingSettings: TrackingSettings?
     
-    public init(personalizations: [Personalization]? = nil,
-                from: EmailAddress? = nil,
-                replyTo: EmailAddress? = nil,
-                subject: String? = nil,
-                content: [[String: String]]? = nil,
-                attachments: [EmailAttachment]? = nil,
-                templateId: String? = nil,
-                sections: [String: String]? = nil,
-                headers: [String: String]? = nil,
-                categories: [String]? = nil,
-                customArgs: [String: String]? = nil,
-                sendAt: Date? = nil,
-                batchId: String? = nil,
-                asm: AdvancedSuppressionManager? = nil,
-                ipPoolName: String? = nil,
-                mailSettings: MailSettings? = nil,
-                trackingSettings: TrackingSettings? = nil) {
+    public init(
+        personalizations: [Personalization],
+        from: EmailAddress? = nil,
+        replyTo: EmailAddress? = nil,
+        replyToList: [EmailAddress]? = nil,
+        subject: String? = nil,
+        content: [EmailContent]? = nil,
+        attachments: [EmailAttachment]? = nil,
+        templateId: String? = nil,
+        headers: [String: String]? = nil,
+        categories: [String]? = nil,
+        customArgs: [String: String]? = nil,
+        sendAt: Date? = nil,
+        batchId: String? = nil,
+        asm: AdvancedSuppressionManager? = nil,
+        ipPoolName: String? = nil,
+        mailSettings: MailSettings? = nil,
+        trackingSettings: TrackingSettings? = nil
+    ) {
         self.personalizations = personalizations
         self.from = from
         self.replyTo = replyTo
+        self.replyToList = replyToList
         self.subject = subject
         self.content = content
         self.attachments = attachments
         self.templateId = templateId
-        self.sections = sections
         self.headers = headers
         self.categories = categories
         self.customArgs = customArgs
@@ -91,11 +93,11 @@ public struct SendGridEmail: Encodable {
         case personalizations
         case from
         case replyTo = "reply_to"
+        case replyToList = "reply_to_list"
         case subject
         case content
         case attachments
         case templateId = "template_id"
-        case sections
         case headers
         case categories
         case customArgs = "custom_args"
@@ -106,25 +108,5 @@ public struct SendGridEmail: Encodable {
         case mailSettings = "mail_settings"
         case trackingSettings = "tracking_settings"
     }
-    
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(personalizations, forKey: .personalizations)
-        try container.encode(from, forKey: .from)
-        try container.encode(replyTo, forKey: .replyTo)
-        try container.encode(subject, forKey: .subject)
-        try container.encode(content, forKey: .content)
-        try container.encode(attachments, forKey: .attachments)
-        try container.encode(templateId, forKey: .templateId)
-        try container.encode(sections, forKey: .sections)
-        try container.encode(headers, forKey: .headers)
-        try container.encode(categories, forKey: .categories)
-        try container.encode(customArgs, forKey: .customArgs)
-        try container.encode(sendAt, forKey: .sendAt)
-        try container.encode(batchId, forKey: .batchId)
-        try container.encode(asm, forKey: .asm)
-        try container.encode(ipPoolName, forKey: .ipPoolName)
-        try container.encode(mailSettings, forKey: .mailSettings)
-        try container.encode(trackingSettings, forKey: .trackingSettings)
-    }
+
 }
