@@ -10,7 +10,7 @@ Add the dependency to Package.swift:
 ~~~~swift
 dependencies: [
 	...
-	.package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "1.0.0")
+	.package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "2.0.0")
 ],
 targets: [
     .target(name: "App", dependencies: [
@@ -22,7 +22,7 @@ Register the config and the provider.
 
 ~~~~swift
 let httpClient = HTTPClient(...)
-let sendgridClient = SendGridClient(httpClient: httpClient, apiKey: "YOUR_API_KEY")
+let sendGridClient = SendGridClient(httpClient: httpClient, apiKey: "YOUR_API_KEY")
 ~~~~
 
 ## Using the API
@@ -34,7 +34,7 @@ Usage in a route closure would be as followed:
 import SendGrid
 
 let email = SendGridEmail(...)
-try sendGridClient.send(email, on: eventLoop)
+try await sendGridClient.send(email)
 ~~~~
 
 ## Error handling
@@ -43,7 +43,7 @@ Simply ensure you catch errors thrown like any other throwing function
 
 ~~~~swift
 do {
-    try sendGridClient.send(...)
+    try await sendGridClient.send(...)
 }
 catch let error as SendGridError {
     print(error)
