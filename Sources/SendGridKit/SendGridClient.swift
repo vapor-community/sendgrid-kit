@@ -27,23 +27,18 @@ public struct SendGridClient {
     }
     
     public func send(email: SendGridEmail) async throws {
-        
-        let eventLoop = httpClient.eventLoopGroup.next()
-        
+                
         var headers = HTTPHeaders()
         headers.add(name: "Authorization", value: "Bearer \(apiKey)")
         headers.add(name: "Content-Type", value: "application/json")
-                 
-        let request = try HTTPClient.Request(
-            url: apiURL,
-            method: .POST,
-            headers: headers,
-            body: .data(encoder.encode(email))
-        )
         
         let response = try await httpClient.execute(
-            request: request,
-            eventLoop: .delegate(on: eventLoop)
+            request: .init(
+                url: apiURL,
+                method: .POST,
+                headers: headers,
+                body: .data(encoder.encode(email))
+            )
         ).get()
         
         // If the request was accepted, simply return
@@ -51,9 +46,8 @@ public struct SendGridClient {
         
         // JSONDecoder will handle empty body by throwing decoding error
         let byteBuffer = response.body ?? ByteBuffer(.init())
-        let responseData = Data(byteBuffer.readableBytesView)
-        
-        throw try decoder.decode(SendGridError.self, from: responseData)
+                
+        throw try decoder.decode(SendGridError.self, from: byteBuffer)
         
     }
 }
