@@ -26,53 +26,28 @@ public struct SendGridClient {
         self.apiKey = apiKey
     }
     
-    public func send(emails: [SendGridEmail], on eventLoop: EventLoop) throws -> EventLoopFuture<Void> {
-        
-        let futures = emails.map { email -> EventLoopFuture<Void> in
-            do {
-                return try send(email: email, on: eventLoop)
-            } catch {
-                return eventLoop.makeFailedFuture(error)
-            }
-        }
-        
-        return EventLoopFuture<Void>.andAllSucceed(futures, on: eventLoop)
-    }
-    
-    public func send(email: SendGridEmail, on eventLoop: EventLoop) throws -> EventLoopFuture<Void> {
-        
+    public func send(email: SendGridEmail) async throws {
+                
         var headers = HTTPHeaders()
         headers.add(name: "Authorization", value: "Bearer \(apiKey)")
         headers.add(name: "Content-Type", value: "application/json")
- 
-        let bodyData = try encoder.encode(email)
         
-        let bodyString = String(decoding: bodyData, as: UTF8.self)
+        let response = try await httpClient.execute(
+            request: .init(
+                url: apiURL,
+                method: .POST,
+                headers: headers,
+                body: .data(encoder.encode(email))
+            )
+        ).get()
         
-        let request = try HTTPClient.Request(url: apiURL,
-                                             method: .POST,
-                                             headers: headers,
-                                             body: .string(bodyString))
+        // If the request was accepted, simply return
+        guard response.status != .ok else { return }
         
-        return httpClient.execute(request: request,
-                                  eventLoop: .delegate(on: eventLoop))
-            .flatMap { response in
-                switch response.status {
-                case .ok, .accepted:
-                    return eventLoop.makeSucceededFuture(())
-                default:
-                    
-                    // JSONDecoder will handle empty body by throwing decoding error
-                    let byteBuffer = response.body ?? ByteBuffer(.init())
-                    let responseData = Data(byteBuffer.readableBytesView)
-                    
-                    do {
-                        let error = try self.decoder.decode(SendGridError.self, from: responseData)
-                        return eventLoop.makeFailedFuture(error)
-                    } catch  {
-                        return eventLoop.makeFailedFuture(error)
-                    }
-                }
-        }
+        // JSONDecoder will handle empty body by throwing decoding error
+        let byteBuffer = response.body ?? ByteBuffer(.init())
+                
+        throw try decoder.decode(SendGridError.self, from: byteBuffer)
+        
     }
 }

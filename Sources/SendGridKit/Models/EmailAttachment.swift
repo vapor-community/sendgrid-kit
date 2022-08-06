@@ -1,13 +1,6 @@
-//
-//  EmailAttachment.swift
-//  Sendgrid
-//
-//  Created by Andrew Edwards on 3/29/18.
-//
-
 import Foundation
 
-public struct EmailAttachment: Encodable {
+public struct EmailAttachment: Codable {
     
     /// The Base64 encoded content of the attachment.
     public var content: String
@@ -24,11 +17,13 @@ public struct EmailAttachment: Encodable {
     /// The content id for the attachment. This is used when the disposition is set to “inline” and the attachment is an image, allowing the file to be displayed within the body of your email.
     public var contentId: String?
     
-    public init(content: String,
-                type: String? = nil,
-                filename: String,
-                disposition: String? = nil,
-                contentId: String? = nil) {
+    public init(
+        content: String,
+        type: String? = nil,
+        filename: String,
+        disposition: String? = nil,
+        contentId: String? = nil
+    ) {
         self.content = content
         self.type = type
         self.filename = filename
@@ -44,12 +39,4 @@ public struct EmailAttachment: Encodable {
         case contentId = "content_id"
     }
     
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(content, forKey: .content)
-        try container.encode(type, forKey: .type)
-        try container.encode(filename, forKey: .filename)
-        try container.encode(disposition, forKey: .disposition)
-        try container.encode(contentId, forKey: .contentId)
-    }
 }
