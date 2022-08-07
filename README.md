@@ -1,6 +1,6 @@
 # SendGridKit
 
-![Swift](http://img.shields.io/badge/swift-5.2-brightgreen.svg)
+![Swift](http://img.shields.io/badge/swift-5.6-brightgreen.svg)
 
 SendGridKit is a Swift package used to communicate with the SendGrid API for Server Side Swift Apps.
 
