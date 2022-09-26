@@ -2,6 +2,7 @@ import Foundation
 import NIO
 import AsyncHTTPClient
 import NIOHTTP1
+import NIOFoundationCompat
 
 public struct SendGridClient {
     
@@ -45,9 +46,9 @@ public struct SendGridClient {
         guard response.status != .ok else { return }
         
         // JSONDecoder will handle empty body by throwing decoding error
-        let data = response.body?.getData(at: 0, length: response.body?.readableBytes ?? 0) ??  Data()
-        
-        throw try decoder.decode(SendGridError.self, from: data)
+        let byteBuffer = response.body ?? ByteBuffer(.init())
+                
+        throw try decoder.decode(SendGridError.self, from: byteBuffer)
         
     }
 }
