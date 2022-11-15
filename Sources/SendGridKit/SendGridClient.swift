@@ -43,7 +43,7 @@ public struct SendGridClient {
         ).get()
         
         // If the request was accepted, simply return
-        guard response.status != .ok else { return }
+        guard response.status != .ok && response.status != .accepted else { return }
         
         // JSONDecoder will handle empty body by throwing decoding error
         let byteBuffer = response.body ?? ByteBuffer(.init())
