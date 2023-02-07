@@ -31,7 +31,7 @@ You can use all of the available parameters here to build your `SendGridEmail`
 Usage in a route closure would be as followed:
 
 ~~~~swift
-import SendGrid
+import SendGridKit
 
 let email = SendGridEmail(...)
 try await sendGridClient.send(email)
