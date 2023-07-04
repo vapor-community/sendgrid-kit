@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Personalization: Codable {
+public struct Personalization<DynamicTemplateData: Codable>: Codable {
 
     /// An array of recipients. Each object within this array may contain the name, but must always contain the email, of a recipient.
     public var to: [EmailAddress]?
@@ -21,8 +21,8 @@ public struct Personalization: Codable {
     public var substitutions: [String: String]?
     
     /// A collection of key/value pairs following the pattern "key":"value" to substitute handlebar template data
-    public var dynamicTemplateData: [String: String]?
-    
+    public var dynamicTemplateData: DynamicTemplateData?
+
     /// Values that are specific to this personalization that will be carried along with the email and its activity data.
     public var customArgs: [String: String]?
     
@@ -36,7 +36,7 @@ public struct Personalization: Codable {
         subject: String? = nil,
         headers: [String: String]? = nil,
         substitutions: [String: String]? = nil,
-        dynamicTemplateData: [String: String]? = nil,
+        dynamicTemplateData: DynamicTemplateData? = nil,
         customArgs: [String: String]? = nil,
         sendAt: Date? = nil
     ) {
@@ -63,4 +63,28 @@ public struct Personalization: Codable {
         case sendAt = "send_at"
     }
     
+}
+
+public extension Personalization where DynamicTemplateData == [String: String] {
+    init(
+        to: [EmailAddress]? = nil,
+        cc: [EmailAddress]? = nil,
+        bcc: [EmailAddress]? = nil,
+        subject: String? = nil,
+        headers: [String: String]? = nil,
+        substitutions: [String: String]? = nil,
+        dynamicTemplateData: [String: String]? = nil,
+        customArgs: [String: String]? = nil,
+        sendAt: Date? = nil
+    ) {
+        self.to = to
+        self.cc = cc
+        self.bcc = bcc
+        self.subject = subject
+        self.headers = headers
+        self.substitutions = substitutions
+        self.dynamicTemplateData = dynamicTemplateData
+        self.customArgs = customArgs
+        self.sendAt = sendAt
+    }
 }
