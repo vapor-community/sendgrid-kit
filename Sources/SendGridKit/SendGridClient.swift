@@ -27,8 +27,8 @@ public struct SendGridClient {
         self.apiKey = apiKey
     }
     
-    public func send(email: SendGridEmail) async throws {
-                
+    public func send<DynamicTemplateData: Codable>(email: SendGridEmail<DynamicTemplateData>) async throws {
+
         var headers = HTTPHeaders()
         headers.add(name: "Authorization", value: "Bearer \(apiKey)")
         headers.add(name: "Content-Type", value: "application/json")
