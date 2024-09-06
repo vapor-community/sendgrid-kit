@@ -2,18 +2,16 @@ import Foundation
 import NIO
 import AsyncHTTPClient
 import NIOHTTP1
-import NIOFoundationCompat
 
 public struct SendGridClient {
-    
     let apiURL = "https://api.sendgrid.com/v3/mail/send"
     let httpClient: HTTPClient
     let apiKey: String
     
     private let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
-         encoder.dateEncodingStrategy = .secondsSince1970
-         return encoder
+        encoder.dateEncodingStrategy = .secondsSince1970
+        return encoder
     }()
     
     private let decoder: JSONDecoder = {
@@ -28,7 +26,6 @@ public struct SendGridClient {
     }
     
     public func send(email: SendGridEmail) async throws {
-                
         var headers = HTTPHeaders()
         headers.add(name: "Authorization", value: "Bearer \(apiKey)")
         headers.add(name: "Content-Type", value: "application/json")
@@ -49,6 +46,5 @@ public struct SendGridClient {
         let byteBuffer = response.body ?? ByteBuffer(.init())
                 
         throw try decoder.decode(SendGridError.self, from: byteBuffer)
-        
     }
 }

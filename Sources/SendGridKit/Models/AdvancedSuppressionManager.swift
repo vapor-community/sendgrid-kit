@@ -19,5 +19,4 @@ public struct AdvancedSuppressionManager: Codable {
         case groupId = "group_id"
         case groupsToDisplay = "groups_to_display"
     }
-
 }

@@ -1,15 +1,21 @@
 import Foundation
 
 public struct MailSettings: Codable {
-    
-    /// Allows you to bypass all unsubscribe groups and suppressions to ensure that the email is delivered to every single recipient. This should only be used in emergencies when it is absolutely necessary that every recipient receives your email.
+    /// Allows you to bypass all unsubscribe groups and suppressions to ensure that the email is delivered to every single recipient.
+    /// 
+    /// > Important: This should only be used in emergencies when it is absolutely necessary that every recipient receives your email.
     public var bypassListManagement: Setting?
     
-    
-    /// Allows you to bypass the spam report list to ensure that the email is delivered to recipients. Bounce and unsubscribe lists will still be checked; addresses on these other lists will not receive the message.
+    /// Allows you to bypass the spam report list to ensure that the email is delivered to recipients.
+    /// 
+    /// > Note: Bounce and unsubscribe lists will still be checked;
+    /// addresses on these other lists will not receive the message.
     public var bypassSpamManagement: Setting?
 
-    /// Allows you to bypass the bounce list to ensure that the email is delivered to recipients. Spam report and unsubscribe lists will still be checked; addresses on these other lists will not receive the message.
+    /// Allows you to bypass the bounce list to ensure that the email is delivered to recipients.
+    /// 
+    /// > Note: Spam report and unsubscribe lists will still be checked;
+    /// addresses on these other lists will not receive the message.
     public var bypassBounceManagement: Setting?
 
     /// The default footer that you would like included on every email.
@@ -44,7 +50,6 @@ public struct MailSettings: Codable {
 public struct Setting: Codable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
-    
 }
 
 public struct Footer: Codable {
