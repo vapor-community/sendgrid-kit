@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Personalization: Codable {
+public struct Personalization: Codable, Sendable {
     /// An array of recipients.
     /// 
     /// > Important: Each object within this array may contain the name, but must always contain the email, of a recipient.

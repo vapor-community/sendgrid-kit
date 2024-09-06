@@ -1,6 +1,6 @@
 import Foundation
 
-public struct SendGridEmail: Codable {
+public struct SendGridEmail: Codable, Sendable {
     /// An array of messages and their metadata.
     /// 
     /// Each object within personalizations can be thought of as an envelope -

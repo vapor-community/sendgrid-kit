@@ -1,6 +1,6 @@
 import Foundation
 
-public struct SendGridError: Error, Decodable {
+public struct SendGridError: Error, Decodable, Sendable {
     public var errors: [SendGridErrorResponse]?
 }
 

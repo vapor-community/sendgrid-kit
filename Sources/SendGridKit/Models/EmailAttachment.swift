@@ -1,6 +1,6 @@
 import Foundation
 
-public struct EmailAttachment: Codable {
+public struct EmailAttachment: Codable, Sendable {
     /// The Base64 encoded content of the attachment.
     public var content: String
     

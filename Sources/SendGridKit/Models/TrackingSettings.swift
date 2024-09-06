@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TrackingSettings: Codable {
+public struct TrackingSettings: Codable, Sendable {
     /// Allows you to track whether a recipient clicked a link in your email.
     public var clickTracking: ClickTracking?
     
@@ -38,7 +38,7 @@ public struct TrackingSettings: Codable {
     }
 }
 
-public struct ClickTracking: Codable {
+public struct ClickTracking: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
     
@@ -51,7 +51,7 @@ public struct ClickTracking: Codable {
     }
 }
 
-public struct OpenTracking: Codable {
+public struct OpenTracking: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
     
@@ -74,7 +74,7 @@ public struct OpenTracking: Codable {
     }
 }
 
-public struct SubscriptionTracking: Codable {
+public struct SubscriptionTracking: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
     
@@ -116,7 +116,7 @@ public struct SubscriptionTracking: Codable {
     }
 }
 
-public struct GoogleAnalytics: Codable {
+public struct GoogleAnalytics: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
     

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct MailSettings: Codable {
+public struct MailSettings: Codable, Sendable {
     /// Allows you to bypass all unsubscribe groups and suppressions to ensure that the email is delivered to every single recipient.
     /// 
     /// > Important: This should only be used in emergencies when it is absolutely necessary that every recipient receives your email.
@@ -47,12 +47,12 @@ public struct MailSettings: Codable {
     }
 }
 
-public struct Setting: Codable {
+public struct Setting: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
 }
 
-public struct Footer: Codable {
+public struct Footer: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
     

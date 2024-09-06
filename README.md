@@ -20,6 +20,8 @@
 
 📧 SendGridKit is a Swift package used to communicate with the SendGrid API for Server Side Swift Apps.
 
+Send simple emails, or leverage the full capabilities of SendGrid's V3 API.
+
 ### Getting Started
 
 Use the SPM string to easily include the dependendency in your `Package.swift` file
@@ -34,7 +36,7 @@ and add it to your target's dependencies:
 .product(name: "SendGridKit", package: "sendgrid-kit")
 ```
 
-## Getting Started
+## Overview
 
 Register the config and the provider.
 

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct AdvancedSuppressionManager: Codable {
+public struct AdvancedSuppressionManager: Codable, Sendable {
     /// The unsubscribe group to associate with this email.
     public var groupId: Int
     
