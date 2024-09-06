@@ -3,7 +3,7 @@ import NIO
 import AsyncHTTPClient
 import NIOHTTP1
 
-public struct SendGridClient {
+public struct SendGridClient: Sendable {
     let apiURL = "https://api.sendgrid.com/v3/mail/send"
     let httpClient: HTTPClient
     let apiKey: String
