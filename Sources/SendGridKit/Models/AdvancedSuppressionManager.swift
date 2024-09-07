@@ -1,6 +1,6 @@
 import Foundation
 
-public struct AdvancedSuppressionManager: Codable {
+public struct AdvancedSuppressionManager: Codable, Sendable {
     /// The unsubscribe group to associate with this email.
     public var groupId: Int
     
@@ -19,5 +19,4 @@ public struct AdvancedSuppressionManager: Codable {
         case groupId = "group_id"
         case groupsToDisplay = "groups_to_display"
     }
-
 }

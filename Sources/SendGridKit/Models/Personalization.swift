@@ -1,14 +1,19 @@
 import Foundation
 
-public struct Personalization: Codable {
-
-    /// An array of recipients. Each object within this array may contain the name, but must always contain the email, of a recipient.
+public struct Personalization: Codable, Sendable {
+    /// An array of recipients.
+    /// 
+    /// > Important: Each object within this array may contain the name, but must always contain the email, of a recipient.
     public var to: [EmailAddress]?
 
-    /// An array of recipients who will receive a copy of your email. Each object within this array may contain the name, but must always contain the email, of a recipient.
+    /// An array of recipients who will receive a copy of your email.
+    /// 
+    /// > Important: Each object within this array may contain the name, but must always contain the email, of a recipient.
     public var cc: [EmailAddress]?
 
-    /// An array of recipients who will receive a blind carbon copy of your email. Each object within this array may contain the name, but must always contain the email, of a recipient.
+    /// An array of recipients who will receive a blind carbon copy of your email.
+    /// 
+    /// > Important: Each object within this array may contain the name, but must always contain the email, of a recipient.
     public var bcc: [EmailAddress]?
 
     /// The subject of your email.
@@ -17,16 +22,18 @@ public struct Personalization: Codable {
     /// A collection of JSON key/value pairs allowing you to specify specific handling instructions for your email.
     public var headers: [String: String]?
 
-    /// A collection of key/value pairs following the pattern "substitution_tag":"value to substitute".
+    /// A collection of key/value pairs following the pattern `"substitution_tag":"value to substitute"`.
     public var substitutions: [String: String]?
     
-    /// A collection of key/value pairs following the pattern "key":"value" to substitute handlebar template data
+    /// A collection of key/value pairs following the pattern `"key":"value"` to substitute handlebar template data.
     public var dynamicTemplateData: [String: String]?
     
     /// Values that are specific to this personalization that will be carried along with the email and its activity data.
     public var customArgs: [String: String]?
     
-    /// A unix timestamp allowing you to specify when you want your email to be delivered. Scheduling more than 72 hours in advance is forbidden.
+    /// A UNIX timestamp allowing you to specify when you want your email to be delivered.
+    /// 
+    /// > Important: Scheduling more than 72 hours in advance is forbidden.
     public var sendAt: Date?
     
     public init(
@@ -62,5 +69,4 @@ public struct Personalization: Codable {
         case dynamicTemplateData = "dynamic_template_data"
         case sendAt = "send_at"
     }
-    
 }

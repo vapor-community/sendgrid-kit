@@ -1,8 +1,10 @@
 import Foundation
 
-public struct SendGridEmail: Codable {
-    
-    /// An array of messages and their metadata. Each object within personalizations can be thought of as an envelope - it defines who should receive an individual message and how that message should be handled.
+public struct SendGridEmail: Codable, Sendable {
+    /// An array of messages and their metadata.
+    /// 
+    /// Each object within `personalizations` can be thought of as an envelope -
+    /// it defines who should receive an individual message and how that message should be handled.
     public var personalizations: [Personalization]
 
     public var from: EmailAddress
@@ -12,7 +14,9 @@ public struct SendGridEmail: Codable {
     /// An array of recipients who will receive replies and/or bounces.
     public var replyToList: [EmailAddress]?
 
-    /// The global, or “message level”, subject of your email. This may be overridden by personalizations[x].subject.
+    /// The global, or “message level”, subject of your email.
+    /// 
+    /// > Note: This may be overridden by `personalizations[x].subject`.
     public var subject: String?
     
     /// An array in which you may specify the content of your email.
@@ -21,22 +25,38 @@ public struct SendGridEmail: Codable {
     /// An array of objects in which you can specify any attachments you want to include.
     public var attachments: [EmailAttachment]?
     
-    /// The id of a template that you would like to use. If you use a template that contains a subject and content (either text or html), you do not need to specify those at the personalizations nor message level.
+    /// The ID of a template that you would like to use.
+    /// 
+    /// > Note: If you use a template that contains a subject and content (either text or HTML),
+    /// you do not need to specify those at the personalizations nor message level.
     public var templateId: String?
     
-    /// An object containing key/value pairs of header names and the value to substitute for them. You must ensure these are properly encoded if they contain unicode characters. Must not be one of the reserved headers.
+    /// An object containing key/value pairs of header names and the value to substitute for them.
+    /// 
+    /// > Important: You must ensure these are properly encoded if they contain unicode characters.
+    /// 
+    /// > Important: Must not be one of the reserved headers.
     public var headers: [String: String]?
 
-    /// An array of category names for this message. Each category name may not exceed 255 characters.
+    /// An array of category names for this message.
+    /// 
+    /// > Important: Each category name may not exceed 255 characters.
     public var categories: [String]?
 
     /// Values that are specific to the entire send that will be carried along with the email and its activity data.
     public var customArgs: [String: String]?
     
-    /// A unix timestamp allowing you to specify when you want your email to be delivered. This may be overridden by the personalizations[x].send_at parameter. You can't schedule more than 72 hours in advance.
+    /// A UNIX timestamp allowing you to specify when you want your email to be delivered.
+    /// 
+    /// > Note: This may be overridden by the `personalizations[x].send_at` parameter.
+    /// 
+    /// > Important: You can't schedule more than 72 hours in advance.
     public var sendAt: Date?
 
-    /// This ID represents a batch of emails to be sent at the same time. Including a batch_id in your request allows you include this email in that batch, and also enables you to cancel or pause the delivery of that batch.
+    /// This ID represents a batch of emails to be sent at the same time.
+    /// 
+    /// Including a `batch_id` in your request allows you include this email in that batch,
+    /// and also enables you to cancel or pause the delivery of that batch.
     public var batchId: String?
 
     /// An object allowing you to specify how to handle unsubscribes.
@@ -108,5 +128,4 @@ public struct SendGridEmail: Codable {
         case mailSettings = "mail_settings"
         case trackingSettings = "tracking_settings"
     }
-
 }
