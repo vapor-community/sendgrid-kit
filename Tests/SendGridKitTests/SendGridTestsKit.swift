@@ -18,12 +18,27 @@ class SendGridKitTests: XCTestCase {
  
     func testSendEmail() async throws {
         // TODO: Replace to address with the email address you'd like to recieve your test email
-        let emailAddress = EmailAddress(email: "TO-ADDRESS", name: "Test User")
+        let emailAddress = EmailAddress("TO-ADDRESS")
         // TODO: Replace from address with the email address associated with your verified Sender Identity
         let fromEmailAddress = EmailAddress(email: "FROM-ADDRESS", name: "Test")
+
         let personalization = Personalization(to: [emailAddress], subject: "Test Email")
-        let emailContent = EmailContent(type: "text/plain", value: "This email was sent using SendGridKit!")
-        let email = SendGridEmail(personalizations: [personalization], from: fromEmailAddress, content: [emailContent])
+
+        let attachment = EmailAttachment(
+            content: "Hello, World!".data(using: .utf8)!.base64EncodedString(),
+            type: "text/plain",
+            filename: "hello.txt",
+            disposition: "attachment"
+        )
+
+        let emailContent = EmailContent("This email was sent using SendGridKit!")
+
+        let email = SendGridEmail(
+            personalizations: [personalization],
+            from: fromEmailAddress,
+            content: [emailContent],
+            attachments: [attachment]
+        )
         
         do {
             try await client.send(email: email)
