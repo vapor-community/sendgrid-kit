@@ -1,7 +1,8 @@
-import Foundation
+@preconcurrency import Foundation
 import NIO
 import AsyncHTTPClient
 import NIOHTTP1
+import NIOFoundationCompat
 
 public struct SendGridClient: Sendable {
     let apiURL = "https://api.sendgrid.com/v3/mail/send"
