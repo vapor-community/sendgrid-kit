@@ -3,7 +3,7 @@ import Foundation
 public struct SendGridEmail: Codable, Sendable {
     /// An array of messages and their metadata.
     /// 
-    /// Each object within personalizations can be thought of as an envelope -
+    /// Each object within `personalizations` can be thought of as an envelope -
     /// it defines who should receive an individual message and how that message should be handled.
     public var personalizations: [Personalization]
 

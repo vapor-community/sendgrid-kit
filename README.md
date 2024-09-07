@@ -20,7 +20,7 @@
 
 📧 SendGridKit is a Swift package used to communicate with the SendGrid API for Server Side Swift Apps.
 
-Send simple emails, or leverage the full capabilities of SendGrid's V3 API.
+Send simple emails, or leverage the full capabilities of [SendGrid's V3 API](https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send).
 
 ### Getting Started
 
