@@ -1,4 +1,4 @@
-@preconcurrency import Foundation
+import Foundation
 import NIO
 import AsyncHTTPClient
 import NIOHTTP1
@@ -41,7 +41,7 @@ public struct SendGridClient: Sendable {
         ).get()
         
         // If the request was accepted, simply return
-        guard response.status != .ok && response.status != .accepted else { return }
+        if response.status == .ok || response.status == .accepted { return }
         
         // JSONDecoder will handle empty body by throwing decoding error
         let byteBuffer = response.body ?? ByteBuffer(.init())

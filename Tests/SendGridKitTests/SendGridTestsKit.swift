@@ -1,22 +1,16 @@
-import XCTest
+import Testing
 import AsyncHTTPClient
 @testable import SendGridKit
 
-class SendGridKitTests: XCTestCase {
-    private var httpClient: HTTPClient!
-    private var client: SendGridClient!
+struct SendGridKitTests {
+    var client: SendGridClient
     
-    override func setUp() {
-        httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
-        // TODO: Replace with your API key to test!
-        client = SendGridClient(httpClient: httpClient, apiKey: "YOUR-API-KEY")
-    }
-    
-    override func tearDown() async throws {
-        try await httpClient.shutdown()
+    init() {
+        // TODO: Replace with a valid API key to test
+        client = SendGridClient(httpClient: HTTPClient.shared, apiKey: "YOUR-API-KEY")
     }
  
-    func testSendEmail() async throws {
+    @Test func sendEmail() async throws {
         // TODO: Replace to address with the email address you'd like to recieve your test email
         let emailAddress = EmailAddress("TO-ADDRESS")
         // TODO: Replace from address with the email address associated with your verified Sender Identity
@@ -40,8 +34,8 @@ class SendGridKitTests: XCTestCase {
             attachments: [attachment]
         )
         
-        do {
+        await withKnownIssue {
             try await client.send(email: email)
-        } catch {}
+        }
     }
 }
