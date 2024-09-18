@@ -22,7 +22,7 @@ struct SendGridKitTests {
             content: "Hello, World!".data(using: .utf8)!.base64EncodedString(),
             type: "text/plain",
             filename: "hello.txt",
-            disposition: "attachment"
+            disposition: .attachment
         )
 
         let emailContent = EmailContent("This email was sent using SendGridKit!")
