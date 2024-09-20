@@ -4,7 +4,7 @@ public struct SendGridError: Error, Decodable, Sendable {
     public var errors: [SendGridErrorResponse]?
 
     /// When applicable, this property value will be an error ID.
-    public var ids: String?
+    public var id: String?
 }
 
 public struct SendGridErrorResponse: Decodable, Sendable {

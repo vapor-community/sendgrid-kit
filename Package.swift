@@ -17,13 +17,19 @@ let package = Package(
             name: "SendGridKit",
             dependencies: [
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-            ]
+            ],
+            swiftSettings: swiftSettings
         ),
         .testTarget(
             name: "SendGridKitTests",
             dependencies: [
                 .target(name: "SendGridKit"),
-            ]
+            ],
+            swiftSettings: swiftSettings
         ),
     ]
 )
+
+var swiftSettings: [SwiftSetting] { [
+    .enableUpcomingFeature("ExistentialAny"),
+] }
