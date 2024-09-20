@@ -46,7 +46,7 @@ public struct SendGridClient: Sendable {
         let response = try await httpClient.execute(request, timeout: .seconds(30))
         
         // If the request was accepted, simply return
-        if response.status == .ok || response.status == .accepted { return }
+        if (200...299).contains(response.status.code) { return }
         
         // JSONDecoder will handle empty body by throwing decoding error                
         throw try await decoder.decode(SendGridError.self, from: response.body.collect(upTo: 1024 * 1024))
