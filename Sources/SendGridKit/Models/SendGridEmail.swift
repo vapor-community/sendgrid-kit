@@ -11,12 +11,19 @@ public struct SendGridEmail: Codable, Sendable {
 
     public var replyTo: EmailAddress?
     
-    /// An array of recipients who will receive replies and/or bounces.
+    /// An array of recipients to whom replies will be sent.
+    /// 
+    /// Each object in this array must contain a recipient's email address.
+    /// Each object in the array may optionally contain a recipient's name.
+    /// You can use either the `reply_to property` or `reply_to_list` property but not both.
     public var replyToList: [EmailAddress]?
 
-    /// The global, or “message level”, subject of your email.
+    /// The global or _message level_ subject of your email.
     /// 
-    /// > Note: This may be overridden by `personalizations[x].subject`.
+    /// Subject lines set in personalizations objects will override this global subject line.
+    /// See line length limits specified in RFC 2822 for guidance on subject line character limits.
+    /// 
+    /// > Note: Min length: 1.
     public var subject: String?
     
     /// An array in which you may specify the content of your email.
@@ -29,7 +36,7 @@ public struct SendGridEmail: Codable, Sendable {
     /// 
     /// > Note: If you use a template that contains a subject and content (either text or HTML),
     /// you do not need to specify those at the personalizations nor message level.
-    public var templateId: String?
+    public var templateID: String?
     
     /// An object containing key/value pairs of header names and the value to substitute for them.
     /// 
@@ -57,7 +64,7 @@ public struct SendGridEmail: Codable, Sendable {
     /// 
     /// Including a `batch_id` in your request allows you include this email in that batch,
     /// and also enables you to cancel or pause the delivery of that batch.
-    public var batchId: String?
+    public var batchID: String?
 
     /// An object allowing you to specify how to handle unsubscribes.
     public var asm: AdvancedSuppressionManager?
@@ -79,12 +86,12 @@ public struct SendGridEmail: Codable, Sendable {
         subject: String? = nil,
         content: [EmailContent]? = nil,
         attachments: [EmailAttachment]? = nil,
-        templateId: String? = nil,
+        templateID: String? = nil,
         headers: [String: String]? = nil,
         categories: [String]? = nil,
         customArgs: [String: String]? = nil,
         sendAt: Date? = nil,
-        batchId: String? = nil,
+        batchID: String? = nil,
         asm: AdvancedSuppressionManager? = nil,
         ipPoolName: String? = nil,
         mailSettings: MailSettings? = nil,
@@ -97,12 +104,12 @@ public struct SendGridEmail: Codable, Sendable {
         self.subject = subject
         self.content = content
         self.attachments = attachments
-        self.templateId = templateId
+        self.templateID = templateID
         self.headers = headers
         self.categories = categories
         self.customArgs = customArgs
         self.sendAt = sendAt
-        self.batchId = batchId
+        self.batchID = batchID
         self.asm = asm
         self.ipPoolName = ipPoolName
         self.mailSettings = mailSettings
@@ -117,12 +124,12 @@ public struct SendGridEmail: Codable, Sendable {
         case subject
         case content
         case attachments
-        case templateId = "template_id"
+        case templateID = "template_id"
         case headers
         case categories
         case customArgs = "custom_args"
         case sendAt = "send_at"
-        case batchId = "batch_id"
+        case batchID = "batch_id"
         case asm
         case ipPoolName = "ip_pool_name"
         case mailSettings = "mail_settings"

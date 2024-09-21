@@ -1,10 +1,10 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.0
 import PackageDescription
 
 let package = Package(
     name: "sendgrid-kit",
     platforms: [
-       .macOS(.v13),
+       .macOS(.v14),
     ],
     products: [
         .library(name: "SendGridKit", targets: ["SendGridKit"]),
@@ -32,9 +32,4 @@ let package = Package(
 
 var swiftSettings: [SwiftSetting] { [
     .enableUpcomingFeature("ExistentialAny"),
-    .enableUpcomingFeature("ConciseMagicFile"),
-    .enableUpcomingFeature("ForwardTrailingClosures"),
-    .enableUpcomingFeature("DisableOutwardActorInference"),
-    .enableUpcomingFeature("StrictConcurrency"),
-    .enableExperimentalFeature("StrictConcurrency=complete"),
 ] }
