@@ -1,34 +1,47 @@
 import Foundation
 
-public struct EmailAttachment: Codable {
-    
+public struct EmailAttachment: Codable, Sendable {
     /// The Base64 encoded content of the attachment.
     public var content: String
     
-    /// The mime type of the content you are attaching. For example, “text/plain” or “text/html”.
+    /// The MIME type of the content you are attaching.
+    /// 
+    /// For example, `image/jpeg`, `text/html` or `application/pdf`.
     public var type: String?
     
-    /// The filename of the attachment.
+    /// The attachment's filename, including the file extension.
     public var filename: String
     
-    /// The content-disposition of the attachment specifying how you would like the attachment to be displayed.
-    public var disposition: String?
+    /// The attachment's content-disposition specifies how you would like the attachment to be displayed.
+    /// 
+    /// For example, inline results in the attached file being displayed automatically within the message
+    /// while attachment results in the attached file requiring some action to be taken before it is displayed
+    /// such as opening or downloading the file.
+    public var disposition: Disposition?
+
+    public enum Disposition: String, Codable, Sendable {
+        case inline
+        case attachment
+    }
     
-    /// The content id for the attachment. This is used when the disposition is set to “inline” and the attachment is an image, allowing the file to be displayed within the body of your email.
-    public var contentId: String?
+    /// The content ID for the attachment.
+    /// 
+    /// This is used when the disposition is set to “inline” and the attachment is an image,
+    /// allowing the file to be displayed within the body of your email.
+    public var contentID: String?
     
     public init(
         content: String,
         type: String? = nil,
         filename: String,
-        disposition: String? = nil,
-        contentId: String? = nil
+        disposition: Disposition? = nil,
+        contentID: String? = nil
     ) {
         self.content = content
         self.type = type
         self.filename = filename
         self.disposition = disposition
-        self.contentId = contentId
+        self.contentID = contentID
     }
     
     private enum CodingKeys: String, CodingKey {
@@ -36,7 +49,6 @@ public struct EmailAttachment: Codable {
         case type
         case filename
         case disposition
-        case contentId = "content_id"
+        case contentID = "content_id"
     }
-    
 }

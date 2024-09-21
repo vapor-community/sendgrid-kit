@@ -1,13 +1,18 @@
 import Foundation
 
-public struct TrackingSettings: Codable {
+public struct TrackingSettings: Codable, Sendable {
     /// Allows you to track whether a recipient clicked a link in your email.
     public var clickTracking: ClickTracking?
     
-    /// Allows you to track whether the email was opened or not, but including a single pixel image in the body of the content. When the pixel is loaded, we can log that the email was opened.
+    /// Allows you to track whether the email was opened or not,
+    /// but including a single pixel image in the body of the content.
+    /// 
+    /// When the pixel is loaded, we can log that the email was opened.
     public var openTracking: OpenTracking?
     
-    /// Allows you to insert a subscription management link at the bottom of the text and html bodies of your email. If you would like to specify the location of the link within your email, you may use the substitution_tag.
+    /// Allows you to insert a subscription management link at the bottom of the text and HTML bodies of your email.
+    /// 
+    /// > Tip: If you would like to specify the location of the link within your email, you may use the ``SubscriptionTracking/substitutionTag``.
     public var subscriptionTracking: SubscriptionTracking?
     
     /// Allows you to enable tracking provided by Google Analytics.
@@ -31,10 +36,9 @@ public struct TrackingSettings: Codable {
         case subscriptionTracking = "subscription_tracking"
         case ganalytics
     }
-    
 }
 
-public struct ClickTracking: Codable {
+public struct ClickTracking: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
     
@@ -45,14 +49,15 @@ public struct ClickTracking: Codable {
         case enable
         case enableText = "enable_text"
     }
-    
 }
 
-public struct OpenTracking: Codable {
+public struct OpenTracking: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
     
-    /// Allows you to specify a substitution tag that you can insert in the body of your email at a location that you desire. This tag will be replaced by the open tracking pixel.
+    /// Allows you to specify a substitution tag that you can insert in the body of your email at a location that you desire.
+    /// 
+    /// > Note: This tag will be replaced by the open tracking pixel.
     public var substitutionTag: String?
     
     public init(
@@ -67,20 +72,28 @@ public struct OpenTracking: Codable {
         case enable
         case substitutionTag = "substitution_tag"
     }
-
 }
 
-public struct SubscriptionTracking: Codable {
+public struct SubscriptionTracking: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
     
-    /// Text to be appended to the email, with the subscription tracking link. You may control where the link is by using the tag <% %>
+    /// Text to be appended to the email, with the subscription tracking link.
+    /// 
+    /// > Tip: You may control where the link is by using the tag `<% %>`.
     public var text: String?
     
-    /// HTML to be appended to the email, with the subscription tracking link. You may control where the link is by using the tag <% %>
+    /// HTML to be appended to the email, with the subscription tracking link.
+    /// 
+    /// > Tip: You may control where the link is by using the tag `<% %>`.
     public var html: String?
     
-    /// A tag that will be replaced with the unsubscribe URL. for example: [unsubscribe_url]. If this parameter is used, it will override both the text and html parameters. The URL of the link will be placed at the substitution tag’s location, with no additional formatting.
+    /// A tag that will be replaced with the unsubscribe URL.
+    /// 
+    /// For example: `[unsubscribe_url]`.
+    /// 
+    /// If this parameter is used, it will override both the ``SubscriptionTracking/text`` and ``SubscriptionTracking/html`` parameters.
+    /// The URL of the link will be placed at the substitution tag’s location, with no additional formatting.
     public var substitutionTag: String?
     
     public init(
@@ -103,7 +116,7 @@ public struct SubscriptionTracking: Codable {
     }
 }
 
-public struct GoogleAnalytics: Codable {
+public struct GoogleAnalytics: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
     
@@ -146,5 +159,4 @@ public struct GoogleAnalytics: Codable {
         case utmContent = "utm_content"
         case utmCampaign = "utm_campaign"
     }
-    
 }
