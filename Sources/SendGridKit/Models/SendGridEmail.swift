@@ -1,11 +1,11 @@
 import Foundation
 
-public struct SendGridEmail: Codable, Sendable {
+public struct SendGridEmail<DynamicTemplateData: Codable & Sendable>: Codable, Sendable {
     /// An array of messages and their metadata.
     /// 
     /// Each object within `personalizations` can be thought of as an envelope -
     /// it defines who should receive an individual message and how that message should be handled.
-    public var personalizations: [Personalization]
+    public var personalizations: [Personalization<DynamicTemplateData>]
 
     public var from: EmailAddress
 
@@ -79,7 +79,7 @@ public struct SendGridEmail: Codable, Sendable {
     public var trackingSettings: TrackingSettings?
     
     public init(
-        personalizations: [Personalization],
+        personalizations: [Personalization<DynamicTemplateData>],
         from: EmailAddress,
         replyTo: EmailAddress? = nil,
         replyToList: [EmailAddress]? = nil,
@@ -134,5 +134,45 @@ public struct SendGridEmail: Codable, Sendable {
         case ipPoolName = "ip_pool_name"
         case mailSettings = "mail_settings"
         case trackingSettings = "tracking_settings"
+    }
+}
+
+public extension SendGridEmail where DynamicTemplateData == [String: String] {
+    init(
+        personalizations: [Personalization<[String: String]>],
+        from: EmailAddress,
+        replyTo: EmailAddress? = nil,
+        replyToList: [EmailAddress]? = nil,
+        subject: String? = nil,
+        content: [EmailContent]? = nil,
+        attachments: [EmailAttachment]? = nil,
+        templateID: String? = nil,
+        headers: [String: String]? = nil,
+        categories: [String]? = nil,
+        customArgs: [String: String]? = nil,
+        sendAt: Date? = nil,
+        batchID: String? = nil,
+        asm: AdvancedSuppressionManager? = nil,
+        ipPoolName: String? = nil,
+        mailSettings: MailSettings? = nil,
+        trackingSettings: TrackingSettings? = nil
+    ) {
+        self.personalizations = personalizations
+        self.from = from
+        self.replyTo = replyTo
+        self.replyToList = replyToList
+        self.subject = subject
+        self.content = content
+        self.attachments = attachments
+        self.templateID = templateID
+        self.headers = headers
+        self.categories = categories
+        self.customArgs = customArgs
+        self.sendAt = sendAt
+        self.batchID = batchID
+        self.asm = asm
+        self.ipPoolName = ipPoolName
+        self.mailSettings = mailSettings
+        self.trackingSettings = trackingSettings
     }
 }

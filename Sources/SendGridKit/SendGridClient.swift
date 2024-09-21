@@ -33,7 +33,7 @@ public struct SendGridClient: Sendable {
         self.apiURL = forEU ? "https://api.eu.sendgrid.com/v3/mail/send" : "https://api.sendgrid.com/v3/mail/send"
     }
     
-    public func send(email: SendGridEmail) async throws {
+    public func send<DynamicTemplateData: Codable & Sendable>(email: SendGridEmail<DynamicTemplateData>) async throws {
         var headers = HTTPHeaders()
         headers.add(name: "Authorization", value: "Bearer \(apiKey)")
         headers.add(name: "Content-Type", value: "application/json")
