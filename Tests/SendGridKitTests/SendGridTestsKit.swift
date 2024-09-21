@@ -1,6 +1,6 @@
 import Testing
 import AsyncHTTPClient
-@testable import SendGridKit
+import SendGridKit
 
 struct SendGridKitTests {
     var client: SendGridClient
@@ -67,6 +67,26 @@ struct SendGridKitTests {
             trackingSettings: trackingSettings
         )
         
+        try await withKnownIssue {
+            try await client.send(email: email)
+        } when: {
+            // TODO: Replace with `false` when you have a valid API key
+            true
+        }
+    }
+
+    @Test func dynamicTemplateData() async throws {
+        struct DynamicTemplateData: Codable, Sendable {
+            let text: String
+            let integer: Int
+            let double: Double
+        }
+        let dynamicTemplateData = DynamicTemplateData(text: "Hello, World!", integer: 42, double: 3.14)
+        
+        // TODO: Replace the addresses with real email addresses
+        let personalization = Personalization(to: [EmailAddress("TO-ADDRESS")], subject: "Test Email", dynamicTemplateData: dynamicTemplateData)
+        let email = SendGridEmail(personalizations: [personalization], from: EmailAddress("FROM-ADDRESS"), content: [EmailContent("Hello, World!")])
+
         try await withKnownIssue {
             try await client.send(email: email)
         } when: {

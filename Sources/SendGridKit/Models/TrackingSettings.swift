@@ -44,6 +44,11 @@ public struct ClickTracking: Codable, Sendable {
     
     /// Indicates if this setting should be included in the text/plain portion of your email.
     public var enableText: Bool
+
+    public init(enable: Bool, enableText: Bool) {
+        self.enable = enable
+        self.enableText = enableText
+    }
     
     private enum CodingKeys: String, CodingKey {
         case enable

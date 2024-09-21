@@ -50,6 +50,10 @@ public struct MailSettings: Codable, Sendable {
 public struct Setting: Codable, Sendable {
     /// Indicates if this setting is enabled.
     public var enable: Bool
+
+    public init(enable: Bool) {
+        self.enable = enable
+    }
 }
 
 public struct Footer: Codable, Sendable {
