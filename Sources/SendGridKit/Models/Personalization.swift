@@ -2,17 +2,17 @@ import Foundation
 
 public struct Personalization<DynamicTemplateData: Codable & Sendable>: Codable, Sendable {
     /// An array of recipients.
-    /// 
+    ///
     /// > Important: Each object within this array may contain the name, but must always contain the email, of a recipient.
     public var to: [EmailAddress]?
 
     /// An array of recipients who will receive a copy of your email.
-    /// 
+    ///
     /// > Important: Each object within this array may contain the name, but must always contain the email, of a recipient.
     public var cc: [EmailAddress]?
 
     /// An array of recipients who will receive a blind carbon copy of your email.
-    /// 
+    ///
     /// > Important: Each object within this array may contain the name, but must always contain the email, of a recipient.
     public var bcc: [EmailAddress]?
 
@@ -24,18 +24,18 @@ public struct Personalization<DynamicTemplateData: Codable & Sendable>: Codable,
 
     /// A collection of key/value pairs following the pattern `"substitution_tag":"value to substitute"`.
     public var substitutions: [String: String]?
-    
+
     /// A collection of key/value pairs following the pattern `"key":"value"` to substitute handlebar template data.
     public var dynamicTemplateData: DynamicTemplateData?
-    
+
     /// Values that are specific to this personalization that will be carried along with the email and its activity data.
     public var customArgs: [String: String]?
-    
+
     /// A UNIX timestamp allowing you to specify when you want your email to be delivered.
-    /// 
+    ///
     /// > Important: Scheduling more than 72 hours in advance is forbidden.
     public var sendAt: Date?
-    
+
     public init(
         to: [EmailAddress]? = nil,
         cc: [EmailAddress]? = nil,
@@ -57,7 +57,7 @@ public struct Personalization<DynamicTemplateData: Codable & Sendable>: Codable,
         self.customArgs = customArgs
         self.sendAt = sendAt
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case to
         case cc
@@ -71,8 +71,8 @@ public struct Personalization<DynamicTemplateData: Codable & Sendable>: Codable,
     }
 }
 
-public extension Personalization where DynamicTemplateData == [String: String] {
-    init(
+extension Personalization where DynamicTemplateData == [String: String] {
+    public init(
         to: [EmailAddress]? = nil,
         cc: [EmailAddress]? = nil,
         bcc: [EmailAddress]? = nil,
