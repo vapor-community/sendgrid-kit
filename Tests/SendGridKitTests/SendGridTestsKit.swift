@@ -1,15 +1,15 @@
-import Testing
 import AsyncHTTPClient
 import SendGridKit
+import Testing
 
 struct SendGridKitTests {
     var client: SendGridClient
-    
+
     init() {
         // TODO: Replace with a valid API key to test
         client = SendGridClient(httpClient: HTTPClient.shared, apiKey: "YOUR-API-KEY")
     }
- 
+
     @Test func sendEmail() async throws {
         // TODO: Replace to address with the email address you'd like to recieve your test email
         let emailAddress = EmailAddress("TO-ADDRESS")
@@ -66,7 +66,7 @@ struct SendGridKitTests {
             mailSettings: mailSettings,
             trackingSettings: trackingSettings
         )
-        
+
         try await withKnownIssue {
             try await client.send(email: email)
         } when: {
@@ -81,11 +81,16 @@ struct SendGridKitTests {
             let integer: Int
             let double: Double
         }
-        let dynamicTemplateData = DynamicTemplateData(text: "Hello, World!", integer: 42, double: 3.14)
-        
+        let dynamicTemplateData = DynamicTemplateData(
+            text: "Hello, World!", integer: 42, double: 3.14)
+
         // TODO: Replace the addresses with real email addresses
-        let personalization = Personalization(to: [EmailAddress("TO-ADDRESS")], subject: "Test Email", dynamicTemplateData: dynamicTemplateData)
-        let email = SendGridEmail(personalizations: [personalization], from: EmailAddress("FROM-ADDRESS"), content: [EmailContent("Hello, World!")])
+        let personalization = Personalization(
+            to: [EmailAddress("TO-ADDRESS")], subject: "Test Email",
+            dynamicTemplateData: dynamicTemplateData)
+        let email = SendGridEmail(
+            personalizations: [personalization], from: EmailAddress("FROM-ADDRESS"),
+            content: [EmailContent("Hello, World!")])
 
         try await withKnownIssue {
             try await client.send(email: email)

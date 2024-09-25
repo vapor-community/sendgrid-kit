@@ -2,7 +2,7 @@ import Foundation
 
 public struct SendGridEmail<DynamicTemplateData: Codable & Sendable>: Codable, Sendable {
     /// An array of messages and their metadata.
-    /// 
+    ///
     /// Each object within `personalizations` can be thought of as an envelope -
     /// it defines who should receive an individual message and how that message should be handled.
     public var personalizations: [Personalization<DynamicTemplateData>]
@@ -10,58 +10,58 @@ public struct SendGridEmail<DynamicTemplateData: Codable & Sendable>: Codable, S
     public var from: EmailAddress
 
     public var replyTo: EmailAddress?
-    
+
     /// An array of recipients to whom replies will be sent.
-    /// 
+    ///
     /// Each object in this array must contain a recipient's email address.
     /// Each object in the array may optionally contain a recipient's name.
     /// You can use either the `reply_to property` or `reply_to_list` property but not both.
     public var replyToList: [EmailAddress]?
 
     /// The global or _message level_ subject of your email.
-    /// 
+    ///
     /// Subject lines set in personalizations objects will override this global subject line.
     /// See line length limits specified in RFC 2822 for guidance on subject line character limits.
-    /// 
+    ///
     /// > Note: Min length: 1.
     public var subject: String?
-    
+
     /// An array in which you may specify the content of your email.
     public var content: [EmailContent]?
 
     /// An array of objects in which you can specify any attachments you want to include.
     public var attachments: [EmailAttachment]?
-    
+
     /// The ID of a template that you would like to use.
-    /// 
+    ///
     /// > Note: If you use a template that contains a subject and content (either text or HTML),
     /// you do not need to specify those at the personalizations nor message level.
     public var templateID: String?
-    
+
     /// An object containing key/value pairs of header names and the value to substitute for them.
-    /// 
+    ///
     /// > Important: You must ensure these are properly encoded if they contain unicode characters.
-    /// 
+    ///
     /// > Important: Must not be one of the reserved headers.
     public var headers: [String: String]?
 
     /// An array of category names for this message.
-    /// 
+    ///
     /// > Important: Each category name may not exceed 255 characters.
     public var categories: [String]?
 
     /// Values that are specific to the entire send that will be carried along with the email and its activity data.
     public var customArgs: [String: String]?
-    
+
     /// A UNIX timestamp allowing you to specify when you want your email to be delivered.
-    /// 
+    ///
     /// > Note: This may be overridden by the `personalizations[x].send_at` parameter.
-    /// 
+    ///
     /// > Important: You can't schedule more than 72 hours in advance.
     public var sendAt: Date?
 
     /// This ID represents a batch of emails to be sent at the same time.
-    /// 
+    ///
     /// Including a `batch_id` in your request allows you include this email in that batch,
     /// and also enables you to cancel or pause the delivery of that batch.
     public var batchID: String?
@@ -77,7 +77,7 @@ public struct SendGridEmail<DynamicTemplateData: Codable & Sendable>: Codable, S
 
     /// Settings to determine how you would like to track the metrics of how your recipients interact with your email.
     public var trackingSettings: TrackingSettings?
-    
+
     public init(
         personalizations: [Personalization<DynamicTemplateData>],
         from: EmailAddress,
@@ -115,7 +115,7 @@ public struct SendGridEmail<DynamicTemplateData: Codable & Sendable>: Codable, S
         self.mailSettings = mailSettings
         self.trackingSettings = trackingSettings
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case personalizations
         case from
@@ -137,8 +137,8 @@ public struct SendGridEmail<DynamicTemplateData: Codable & Sendable>: Codable, S
     }
 }
 
-public extension SendGridEmail where DynamicTemplateData == [String: String] {
-    init(
+extension SendGridEmail where DynamicTemplateData == [String: String] {
+    public init(
         personalizations: [Personalization<[String: String]>],
         from: EmailAddress,
         replyTo: EmailAddress? = nil,
