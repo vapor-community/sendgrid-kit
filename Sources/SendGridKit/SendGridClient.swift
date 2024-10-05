@@ -30,14 +30,10 @@ public struct SendGridClient: Sendable {
     public init(httpClient: HTTPClient, apiKey: String, forEU: Bool = false) {
         self.httpClient = httpClient
         self.apiKey = apiKey
-        self.apiURL =
-            forEU
-            ? "https://api.eu.sendgrid.com/v3/mail/send" : "https://api.sendgrid.com/v3/mail/send"
+        self.apiURL = forEU ? "https://api.eu.sendgrid.com/v3/mail/send" : "https://api.sendgrid.com/v3/mail/send"
     }
 
-    public func send<DynamicTemplateData: Codable & Sendable>(
-        email: SendGridEmail<DynamicTemplateData>
-    ) async throws {
+    public func send<DynamicTemplateData: Codable & Sendable>(email: SendGridEmail<DynamicTemplateData>) async throws {
         var headers = HTTPHeaders()
         headers.add(name: "Authorization", value: "Bearer \(apiKey)")
         headers.add(name: "Content-Type", value: "application/json")
@@ -53,7 +49,6 @@ public struct SendGridClient: Sendable {
         if (200...299).contains(response.status.code) { return }
 
         // `JSONDecoder` will handle empty body by throwing decoding error
-        throw try await decoder.decode(
-            SendGridError.self, from: response.body.collect(upTo: 1024 * 1024))
+        throw try await decoder.decode(SendGridError.self, from: response.body.collect(upTo: 1024 * 1024))
     }
 }

@@ -81,16 +81,17 @@ struct SendGridKitTests {
             let integer: Int
             let double: Double
         }
-        let dynamicTemplateData = DynamicTemplateData(
-            text: "Hello, World!", integer: 42, double: 3.14)
+        let dynamicTemplateData = DynamicTemplateData(text: "Hello, World!", integer: 42, double: 3.14)
 
         // TODO: Replace the addresses with real email addresses
         let personalization = Personalization(
             to: [EmailAddress("TO-ADDRESS")], subject: "Test Email",
-            dynamicTemplateData: dynamicTemplateData)
+            dynamicTemplateData: dynamicTemplateData
+        )
         let email = SendGridEmail(
             personalizations: [personalization], from: EmailAddress("FROM-ADDRESS"),
-            content: [EmailContent("Hello, World!")])
+            content: [EmailContent("Hello, World!")]
+        )
 
         try await withKnownIssue {
             try await client.send(email: email)
