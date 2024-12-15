@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "SendGridKit", targets: ["SendGridKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.23.0")
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.24.0")
     ],
     targets: [
         .target(
