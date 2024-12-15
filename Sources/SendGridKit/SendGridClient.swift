@@ -35,15 +35,15 @@ public struct SendGridClient: Sendable {
 
     public func send<DynamicTemplateData: Codable & Sendable>(email: SendGridEmail<DynamicTemplateData>) async throws {
         var headers = HTTPHeaders()
-        headers.add(name: "Authorization", value: "Bearer \(apiKey)")
+        headers.add(name: "Authorization", value: "Bearer \(self.apiKey)")
         headers.add(name: "Content-Type", value: "application/json")
 
-        var request = HTTPClientRequest(url: apiURL)
+        var request = HTTPClientRequest(url: self.apiURL)
         request.method = .POST
         request.headers = headers
-        request.body = try HTTPClientRequest.Body.bytes(encoder.encode(email))
+        request.body = try HTTPClientRequest.Body.bytes(self.encoder.encode(email))
 
-        let response = try await httpClient.execute(request, timeout: .seconds(30))
+        let response = try await self.httpClient.execute(request, timeout: .seconds(30))
 
         // If the request was accepted, simply return
         if (200...299).contains(response.status.code) { return }
