@@ -4,10 +4,11 @@ import NIO
 import NIOFoundationCompat
 import NIOHTTP1
 
+/// A client for sending emails using the SendGrid API.
 public struct SendGridClient: Sendable {
-    let apiURL: String
-    let httpClient: HTTPClient
-    let apiKey: String
+    private let apiURL: String
+    private let httpClient: HTTPClient
+    private let apiKey: String
 
     private let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
@@ -33,6 +34,9 @@ public struct SendGridClient: Sendable {
         self.apiURL = forEU ? "https://api.eu.sendgrid.com/v3/mail/send" : "https://api.sendgrid.com/v3/mail/send"
     }
 
+    /// Send an email using the SendGrid API.
+    ///
+    /// - Parameter email: The ``SendGridEmail`` to send.
     public func send<DynamicTemplateData: Codable & Sendable>(email: SendGridEmail<DynamicTemplateData>) async throws {
         var headers = HTTPHeaders()
         headers.add(name: "Authorization", value: "Bearer \(self.apiKey)")
@@ -49,6 +53,6 @@ public struct SendGridClient: Sendable {
         if (200...299).contains(response.status.code) { return }
 
         // `JSONDecoder` will handle empty body by throwing decoding error
-        throw try await decoder.decode(SendGridError.self, from: response.body.collect(upTo: 1024 * 1024))
+        throw try await self.decoder.decode(SendGridError.self, from: response.body.collect(upTo: 1024 * 1024))
     }
 }

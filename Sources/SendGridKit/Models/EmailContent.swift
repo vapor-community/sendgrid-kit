@@ -1,5 +1,6 @@
 import Foundation
 
+/// The content of an email.
 public struct EmailContent: Codable, Sendable {
     /// The MIME type of the content you are including in your email.
     ///

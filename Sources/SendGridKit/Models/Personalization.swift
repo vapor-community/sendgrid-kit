@@ -1,5 +1,6 @@
 import Foundation
 
+/// An object containing the personalization of an email.
 public struct Personalization<DynamicTemplateData: Codable & Sendable>: Codable, Sendable {
     /// An array of recipients.
     ///

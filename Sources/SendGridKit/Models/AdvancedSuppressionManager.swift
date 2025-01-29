@@ -1,5 +1,6 @@
 import Foundation
 
+/// An object allowing you to specify how to handle unsubscribes.
 public struct AdvancedSuppressionManager: Codable, Sendable {
     /// The unsubscribe group to associate with this email.
     ///

@@ -2,4 +2,3 @@ version: 1
 builder:
   configs:
     - documentation_targets: [SendGridKit]
-      swift_version: 6.0

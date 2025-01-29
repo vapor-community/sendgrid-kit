@@ -1,5 +1,6 @@
 import Foundation
 
+/// An email to be sent using the SendGrid API.
 public struct SendGridEmail<DynamicTemplateData: Codable & Sendable>: Codable, Sendable {
     /// An array of messages and their metadata.
     ///
@@ -78,6 +79,7 @@ public struct SendGridEmail<DynamicTemplateData: Codable & Sendable>: Codable, S
     /// Settings to determine how you would like to track the metrics of how your recipients interact with your email.
     public var trackingSettings: TrackingSettings?
 
+    /// Initialize a new ``SendGridEmail`` using a custom dynamic template data type.
     public init(
         personalizations: [Personalization<DynamicTemplateData>],
         from: EmailAddress,
@@ -138,6 +140,7 @@ public struct SendGridEmail<DynamicTemplateData: Codable & Sendable>: Codable, S
 }
 
 extension SendGridEmail where DynamicTemplateData == [String: String] {
+    /// Initialize a new ``SendGridEmail`` using a dictionary of `String` as dynamic template data.
     public init(
         personalizations: [Personalization<[String: String]>],
         from: EmailAddress,

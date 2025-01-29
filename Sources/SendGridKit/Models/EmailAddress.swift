@@ -1,5 +1,6 @@
 import Foundation
 
+/// An email address to use in an email to be sent via the SendGrid API.
 public struct EmailAddress: Codable, Sendable {
     /// The email address of the person to whom you are sending an email.
     public var email: String

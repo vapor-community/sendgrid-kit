@@ -18,22 +18,22 @@
 </div>
 <br>
 
-📧 SendGridKit is a Swift package used to communicate with the SendGrid API for Server Side Swift Apps.
+📧 SendGridKit is a Swift package that helps you communicate with the SendGrid API in your Server Side Swift applications.
 
-Send simple emails, or leverage the full capabilities of [SendGrid's V3 API](https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send).
+Send simple emails or leverage the full capabilities of [SendGrid's V3 API](https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send).
 
 ### Getting Started
 
 Use the SPM string to easily include the dependendency in your `Package.swift` file
 
 ```swift
-.package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "3.0.0-rc.1")
+.package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "3.0.0"),
 ```
 
 and add it to your target's dependencies:
 
 ```swift
-.product(name: "SendGridKit", package: "sendgrid-kit")
+.product(name: "SendGridKit", package: "sendgrid-kit"),
 ```
 
 ## Overview
@@ -41,6 +41,9 @@ and add it to your target's dependencies:
 Register the config and the provider.
 
 ```swift
+import AsyncHTTPClient
+import SendGridKit
+
 let httpClient = HTTPClient(...)
 let sendGridClient = SendGridClient(httpClient: httpClient, apiKey: "YOUR_API_KEY")
 ```
@@ -65,6 +68,8 @@ If the request to the API failed for any reason a `SendGridError` is thrown, whi
 Simply ensure you catch errors thrown like any other throwing function.
 
 ```swift
+import SendGridKit
+
 do {
     try await sendGridClient.send(email: email)
 } catch let error as SendGridError {
