@@ -35,7 +35,7 @@ struct SendGridKitTests {
             bypassListManagement: true,
             bypassSpamManagement: true,
             bypassBounceManagement: true,
-            footer: .init(enable: true, text: "footer", html: "<strong>footer</strong>"),
+            footer: false,
             sandboxMode: true
         )
 
