@@ -2,15 +2,19 @@ import AsyncHTTPClient
 import SendGridKit
 import Testing
 
+@Suite("SendGridKit Tests")
 struct SendGridKitTests {
     var client: SendGridClient
+    // TODO: Replace with `false` when you have a valid API key
+    let credentialsAreInvalid = true
 
     init() {
         // TODO: Replace with a valid API key to test
         client = SendGridClient(httpClient: HTTPClient.shared, apiKey: "YOUR-API-KEY")
     }
 
-    @Test func sendEmail() async throws {
+    @Test("Send Email")
+    func sendEmail() async throws {
         // TODO: Replace to address with the email address you'd like to recieve your test email
         let emailAddress = EmailAddress("TO-ADDRESS")
         // TODO: Replace from address with the email address associated with your verified Sender Identity
@@ -27,25 +31,24 @@ struct SendGridKitTests {
 
         let emailContent = EmailContent("This email was sent using SendGridKit!")
 
-        let setting = Setting(enable: true)
         let mailSettings = MailSettings(
-            bypassListManagement: setting,
-            bypassSpamManagement: setting,
-            bypassBounceManagement: setting,
-            footer: Footer(enable: true, text: "footer", html: "<strong>footer</strong>"),
-            sandboxMode: setting
+            bypassListManagement: true,
+            bypassSpamManagement: true,
+            bypassBounceManagement: true,
+            footer: .init(enable: true, text: "footer", html: "<strong>footer</strong>"),
+            sandboxMode: true
         )
 
         let trackingSettings = TrackingSettings(
-            clickTracking: ClickTracking(enable: true, enableText: true),
-            openTracking: OpenTracking(enable: true, substitutionTag: "open_tracking"),
-            subscriptionTracking: SubscriptionTracking(
+            clickTracking: .init(enable: true, enableText: true),
+            openTracking: .init(enable: true, substitutionTag: "open_tracking"),
+            subscriptionTracking: .init(
                 enable: true,
                 text: "sub_text",
                 html: "<strong>sub_html</strong>",
                 substitutionTag: "sub_tag"
             ),
-            ganalytics: GoogleAnalytics(
+            ganalytics: .init(
                 enable: true,
                 utmSource: "utm_source",
                 utmMedium: "utm_medium",
@@ -70,12 +73,12 @@ struct SendGridKitTests {
         try await withKnownIssue {
             try await client.send(email: email)
         } when: {
-            // TODO: Replace with `false` when you have a valid API key
-            true
+            credentialsAreInvalid
         }
     }
 
-    @Test func dynamicTemplateData() async throws {
+    @Test("DynamicTemplateData")
+    func dynamicTemplateData() async throws {
         struct DynamicTemplateData: Codable, Sendable {
             let text: String
             let integer: Int
@@ -96,8 +99,7 @@ struct SendGridKitTests {
         try await withKnownIssue {
             try await client.send(email: email)
         } when: {
-            // TODO: Replace with `false` when you have a valid API key
-            true
+            credentialsAreInvalid
         }
     }
 }

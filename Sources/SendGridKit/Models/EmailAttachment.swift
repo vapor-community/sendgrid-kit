@@ -1,5 +1,6 @@
 import Foundation
 
+/// An attachment to include in an email.
 public struct EmailAttachment: Codable, Sendable {
     /// The Base64 encoded content of the attachment.
     public var content: String
@@ -19,8 +20,12 @@ public struct EmailAttachment: Codable, Sendable {
     /// such as opening or downloading the file.
     public var disposition: Disposition?
 
+    /// The disposition of the attachment.
     public enum Disposition: String, Codable, Sendable {
+        /// The attachment is displayed automatically within the message.
         case inline
+
+        /// The attached file requires some action to be taken before it is displayed.
         case attachment
     }
 
