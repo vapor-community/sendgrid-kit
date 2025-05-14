@@ -1,6 +1,5 @@
 import AsyncHTTPClient
 import Foundation
-import NIO
 import SendGridKit
 import Testing
 
