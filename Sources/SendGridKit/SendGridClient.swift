@@ -41,6 +41,7 @@ public struct SendGridClient: Sendable {
     /// - Parameters:
     ///   - httpClient: The `HTTPClient` to use for sending requests
     ///   - apiKey: The SendGrid API key
+    ///   - emailValidationAPIKey: The SendGrid Email validation API key
     ///   - forEU: Whether to use the API endpoint for global users and subusers or for EU regional subusers
     public init(httpClient: HTTPClient, apiKey: String, emailValidationAPIKey: String, forEU: Bool = false) {
         self.httpClient = httpClient
