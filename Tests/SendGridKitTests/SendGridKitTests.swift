@@ -9,9 +9,13 @@ struct SendGridKitTests {
     // TODO: Replace with `false` when you have a valid API key
     let credentialsAreInvalid = true
 
+    let emailValidationClient: SendGridClient
+
     init() {
         // TODO: Replace with a valid API key to test
         client = SendGridClient(httpClient: HTTPClient.shared, apiKey: "YOUR-API-KEY")
+        emailValidationClient = SendGridClient(
+            httpClient: HTTPClient.shared, apiKey: "YOUR-API-KEY", emailValidationAPIKey: "YOUR-EMAIL-VALIDATION-API-KEY")
     }
 
     @Test("Send Email")
@@ -109,7 +113,7 @@ struct SendGridKitTests {
         let validationRequest = EmailValidationRequest(email: "test@example.com", source: "unit_test")
 
         try await withKnownIssue {
-            let response = try await client.validateEmail(validationRequest: validationRequest)
+            let response = try await emailValidationClient.validateEmail(validationRequest: validationRequest)
 
             // Verify response properties exist
             _ = response.result.score
@@ -120,6 +124,28 @@ struct SendGridKitTests {
             } else {
                 print("Email is invalid: \(response.result.suggestion)")
             }
+        } when: {
+            credentialsAreInvalid
+        }
+    }
+
+    @Test("Request Upload URL for CSV")
+    func requestUploadURL() async throws {
+        try await withKnownIssue {
+            let response = try await emailValidationClient.getBulkValidationUploadURL(fileType: .csv)
+            #expect(response.uploadUri != "")
+            #expect(response.jobId != "")
+        } when: {
+            credentialsAreInvalid
+        }
+    }
+
+    @Test("Request Upload URL for Zip")
+    func requestUploadURLForZipArchive() async throws {
+        try await withKnownIssue {
+            let response = try await emailValidationClient.getBulkValidationUploadURL(fileType: .zip)
+            #expect(response.uploadUri != "")
+            #expect(response.jobId != "")
         } when: {
             credentialsAreInvalid
         }
@@ -138,7 +164,7 @@ struct SendGridKitTests {
 
         try await withKnownIssue {
             // Step 1: Get an upload URL
-            let uploadURLResponse = try await client.getBulkValidationUploadURL(fileType: .csv)
+            let uploadURLResponse = try await emailValidationClient.getBulkValidationUploadURL(fileType: .csv)
 
             // Verify upload URL response
             _ = uploadURLResponse.jobId
