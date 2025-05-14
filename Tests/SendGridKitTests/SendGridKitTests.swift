@@ -151,6 +151,67 @@ struct SendGridKitTests {
         }
     }
 
+    @Test("Get Bulk validation jobs")
+    func getBulkValidationJobs() async throws {
+        try await withKnownIssue {
+            let response = try await emailValidationClient.getBulkEmailValidationJobs()
+            #expect(response.result.count > 0)
+        } when: {
+            credentialsAreInvalid
+        }
+    }
+
+    @Test("Get Bulk validation job status")
+    func getBulkValidationJobStatus() async throws {
+        try await withKnownIssue {
+            let jobsResponse = try await emailValidationClient.checkBulkValidationStatus(jobId: "12345")
+            let errors = jobsResponse.result.errors
+            #expect(errors.count == 0)
+        } when: {
+            credentialsAreInvalid
+        }
+    }
+
+    @Test("Upload CSV File")
+    func uploadCSVFile() async throws {
+        let csvContent = """
+            email
+            test1@example.com
+            test2@example.com
+            test3@example.com
+            """
+        let csvData = csvContent.data(using: .utf8)!
+
+        let response = """
+            {
+              "job_id": "01H793APATD899ESMY25ZNPNCF",
+              "upload_uri": "https://example.com/",
+              "upload_headers": [
+                {
+                  "header": "x-amz-server-side-encryption",
+                  "value": "aws:kms"
+                },
+                {
+                  "header": "content-type",
+                  "value": "text/csv"
+                }
+              ]
+            }
+            """
+
+        let responseData = try JSONDecoder().decode(BulkValidationUploadURLResponse.self, from: response.data(using: .utf8)!)
+
+        try await withKnownIssue {
+            let response = try await emailValidationClient.uploadBulkValidationFile(
+                fileData: csvData,
+                uploadResponse: responseData
+            )
+            #expect(response.0 == true)
+        } when: {
+            credentialsAreInvalid
+        }
+    }
+
     @Test("Bulk Email Validation")
     func bulkValidateEmail() async throws {
         // Create a simple CSV with a few test emails
