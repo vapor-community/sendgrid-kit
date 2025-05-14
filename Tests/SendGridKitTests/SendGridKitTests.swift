@@ -1,8 +1,8 @@
 import AsyncHTTPClient
+import Foundation
+import NIO
 import SendGridKit
 import Testing
-import NIO
-import Foundation
 
 @Suite("SendGridKit Tests")
 struct SendGridKitTests {
@@ -104,17 +104,17 @@ struct SendGridKitTests {
             credentialsAreInvalid
         }
     }
-    
+
     @Test("Email Validation")
     func validateEmail() async throws {
         let validationRequest = EmailValidationRequest(email: "test@example.com", source: "unit_test")
-        
+
         try await withKnownIssue {
             let response = try await client.validateEmail(validationRequest: validationRequest)
-            
+
             // Verify response properties exist
             _ = response.result.score
-            
+
             // Basic assertions
             if response.result.verdict == .valid {
                 print("Email is valid with score: \(response.result.score)")
@@ -125,47 +125,47 @@ struct SendGridKitTests {
             credentialsAreInvalid
         }
     }
-    
+
     @Test("Bulk Email Validation")
     func bulkValidateEmail() async throws {
         // Create a simple CSV with a few test emails
         let csvContent = """
-        email
-        test1@example.com
-        test2@example.com
-        test3@example.com
-        """
+            email
+            test1@example.com
+            test2@example.com
+            test3@example.com
+            """
         let csvData = csvContent.data(using: .utf8)!
-        
+
         try await withKnownIssue {
             // Step 1: Get an upload URL
             let uploadURLResponse = try await client.getBulkValidationUploadURL(fileType: .csv)
-            
+
             // Verify upload URL response
             _ = uploadURLResponse.jobId
             _ = uploadURLResponse.uploadUri
             _ = uploadURLResponse.uploadHeaders
-            
+
             print("Got upload details with job ID: \(uploadURLResponse.jobId)")
-            
+
             // Step 2: Upload the CSV file to start the validation job (simulated in this test)
             let (uploadSuccess, jobId) = try await client.uploadBulkValidationFile(
                 fileData: csvData,
                 uploadResponse: uploadURLResponse
             )
-            
+
             #expect(uploadSuccess == true)
-            
+
             // Step 4: Check job status
             let jobStatusResponse = try await client.checkBulkValidationStatus(jobId: jobId)
-        
+
             // Verify job status properties
             let result = jobStatusResponse.result
             _ = result.id
             _ = result.status
             _ = result.segmentsProcessed
             _ = result.segments
-            
+
             // Step 5: Get results if job is completed (unlikely in a test without waiting)
             #expect(result.status == .done)
         } when: {

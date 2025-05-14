@@ -1,4 +1,3 @@
-
 /// A request to validate an email address using SendGrid's Email Validation API.
 public struct EmailValidationRequest: Encodable {
     /// The email address to validate.
@@ -99,23 +98,22 @@ public struct ValidationChecks: Decodable, Sendable {
     /// The IP address associated with this email.
     public let ipAddress: String
 
-
     public struct AdditionalInfo: Decodable, Sendable {
         /// Whether email sent to this address from your account has bounced.
         public let hasKnownBounces: Bool
         /// Whether our model predicts that the email address might bounce.
         public let hasSuspectedBounces: Bool
-        
+
         enum CodingKeys: String, CodingKey {
             case hasKnownBounces = "has_known_bounces"
             case hasSuspectedBounces = "has_suspected_bounces"
         }
     }
-    
+
     public struct LocalPartInfo: Decodable, Sendable {
         /// Whether the local part of email appears to be a role or group (e.g., hr, admin)
         public let isSuspectedRoleAddress: Bool
-        
+
         enum CodingKeys: String, CodingKey {
             case isSuspectedRoleAddress = "is_suspected_role_address"
         }
@@ -128,14 +126,14 @@ public struct ValidationChecks: Decodable, Sendable {
         public let hasMXOrARecord: Bool
         /// Whether the domain appears to be from a disposable email address service.
         public let isSuspectedDisposableAddress: Bool
-        
+
         enum CodingKeys: String, CodingKey {
             case hasValidAddressSyntax = "has_valid_address_syntax"
             case hasMXOrARecord = "has_mx_or_a_record"
             case isSuspectedDisposableAddress = "is_suspected_disposable_address"
         }
     }
-    
+
     /// CodingKeys for mapping JSON fields to struct properties
     private enum CodingKeys: String, CodingKey {
         case domain
@@ -271,9 +269,11 @@ public struct BulkEmailValidationJobResponse: Codable, Sendable {
 
         /// The ISO8601 timestamp when the Job was finished.
         public let finishedAt: Double
-        
+
         private enum CodingKeys: String, CodingKey {
-            case id, status, startedAt = "started_at", finishedAt = "finished_at"
+            case id, status
+            case startedAt = "started_at"
+            case finishedAt = "finished_at"
         }
     }
 }
