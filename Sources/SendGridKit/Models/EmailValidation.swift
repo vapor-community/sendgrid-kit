@@ -1,3 +1,5 @@
+import Foundation
+
 /// A request to validate an email address using SendGrid's Email Validation API.
 public struct EmailValidationRequest: Encodable {
     /// The email address to validate.
@@ -223,10 +225,10 @@ public struct BulkValidationJobResult: Decodable, Sendable {
 
     /// The ISO8601 timestamp when the Job was created.
     /// This is the time at which the upload request was sent to the upload_uri.
-    public let startedAt: Double
+    public let startedAt: Date
 
     /// The ISO8601 timestamp when the Job was finished.
-    public let finishedAt: Double
+    public let finishedAt: Date?
 
     /// Array containing error messages related to the Bulk Email Address Validation Job.
     /// Array is empty if no errors ocurred.
@@ -265,10 +267,10 @@ public struct BulkEmailValidationJobResponse: Codable, Sendable {
         public let status: BuildEmailValidationStatus
 
         /// The ISO8601 timestamp when the Job was created. This is the time at which the upload request was sent to the upload_uri.
-        public let startedAt: Double
+        public let startedAt: Date
 
         /// The ISO8601 timestamp when the Job was finished.
-        public let finishedAt: Double
+        public let finishedAt: Date?
 
         private enum CodingKeys: String, CodingKey {
             case id, status
