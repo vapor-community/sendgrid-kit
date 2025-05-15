@@ -166,7 +166,7 @@ struct SendGridKitTests {
         try await withKnownIssue {
             let jobsResponse = try await emailValidationClient.checkBulkValidationStatus(jobId: "12345")
             let errors = jobsResponse.response.value.result.errors
-            #expect(errors?.count == 0)
+            #expect(errors?.isEmpty)
         } when: {
             credentialsAreInvalid
         }
