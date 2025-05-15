@@ -102,7 +102,12 @@ public struct ValidationJobResult: Decodable, Sendable {
 
     /// Array containing error messages related to the Bulk Email Address Validation Job.
     /// Array is empty if no errors ocurred.
-    public let errors: [SendGridError.Description]?
+    public let errors: [BulkValidationError]?
+
+    public struct BulkValidationError: Decodable, Sendable {
+        /// Description of the error encountered during execution of the Bulk Email Address Validation Job.
+        public let message: String
+    }
 
     /// CodingKeys for mapping JSON fields to struct properties
     private enum CodingKeys: String, CodingKey {
