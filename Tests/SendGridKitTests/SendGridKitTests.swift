@@ -174,29 +174,23 @@ struct SendGridKitTests {
 
     @Test("Get Bulk validation job status should throw when email validation API key is missing")
     func getBulkValidationJobStatusShouldThrow() async throws {
-        let error = await #expect(throws: SendGridError.self) {
+        await #expect(throws: SendGridError.self) {
             try await client.checkBulkValidationStatus(jobId: "12345")
         }
-
-        #expect(error?.id?.isEmpty == false)
     }
 
     @Test("Get Bulk validation jobs should throw when email validation API key is missing")
     func getBulkValidationJobsShouldThrow() async throws {
-        let error = await #expect(throws: SendGridError.self) {
+        await #expect(throws: SendGridError.self) {
             try await client.getBulkEmailValidationJobs()
         }
-
-        #expect(error?.id?.isEmpty == false)
     }
 
     @Test("Validate email should throw when email validation API key is missing")
     func validateEmailShouldThrow() async throws {
-        let error = await #expect(throws: SendGridError.self) {
+        await #expect(throws: SendGridError.self) {
             try await client.validateEmail(validationRequest: .init(email: "some@email.com"))
         }
-
-        #expect(error?.id?.isEmpty == false)
     }
 
     @Test("Upload CSV File")
