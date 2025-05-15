@@ -166,7 +166,7 @@ struct SendGridKitTests {
         try await withKnownIssue {
             let jobsResponse = try await emailValidationClient.checkBulkValidationStatus(jobId: "12345")
             let errors = jobsResponse.response.value.result.errors
-            #expect(errors?.isEmpty)
+            #expect(errors?.isEmpty == true)
         } when: {
             credentialsAreInvalid
         }
@@ -324,11 +324,9 @@ struct SendGridKitTests {
             let uploadURLResponse = try await emailValidationClient.getBulkValidationUploadURL(fileType: .csv)
 
             // Verify upload URL response
-            _ = uploadURLResponse.jobId
-            _ = uploadURLResponse.uploadUri
-            _ = uploadURLResponse.uploadHeaders
-
-            print("Got upload details with job ID: \(uploadURLResponse.jobId)")
+            #expect(!uploadURLResponse.jobId.isEmpty)
+            #expect(!uploadURLResponse.uploadUri.isEmpty)
+            #expect(!uploadURLResponse.uploadHeaders.isEmpty)
 
             // Step 2: Upload the CSV file to start the validation job (simulated in this test)
             let (uploadSuccess, jobId) = try await client.uploadBulkValidationFile(
@@ -343,13 +341,10 @@ struct SendGridKitTests {
 
             // Verify job status properties
             let result = jobStatusResponse.response.value.result
-            _ = result.id
-            _ = result.status
-            _ = result.segmentsProcessed
-            _ = result.segments
-
-            // Step 5: Get results if job is completed (unlikely in a test without waiting)
-            #expect(result.status == .done)
+            #expect(!result.id.isEmpty)
+            #expect(result.status == .processing)
+            #expect(result.segmentsProcessed != nil)
+            #expect(result.segments != nil)
         } when: {
             credentialsAreInvalid
         }
