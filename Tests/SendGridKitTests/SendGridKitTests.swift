@@ -155,7 +155,7 @@ struct SendGridKitTests {
     func getBulkValidationJobs() async throws {
         try await withKnownIssue {
             let response = try await emailValidationClient.getBulkEmailValidationJobs()
-            #expect(response.result.count > 0)
+            #expect(!response.result.isEmpty)
         } when: {
             credentialsAreInvalid
         }
