@@ -165,11 +165,38 @@ struct SendGridKitTests {
     func getBulkValidationJobStatus() async throws {
         try await withKnownIssue {
             let jobsResponse = try await emailValidationClient.checkBulkValidationStatus(jobId: "12345")
-            let errors = jobsResponse.result.errors
-            #expect(errors.count == 0)
+            let errors = jobsResponse.response.value.result.errors
+            #expect(errors?.count == 0)
         } when: {
             credentialsAreInvalid
         }
+    }
+
+    @Test("Get Bulk validation job status should throw when email validation API key is missing")
+    func getBulkValidationJobStatusShouldThrow() async throws {
+        let error = await #expect(throws: SendGridError.self) {
+            try await client.checkBulkValidationStatus(jobId: "12345")
+        }
+
+        #expect(error?.id?.isEmpty == false)
+    }
+
+    @Test("Get Bulk validation jobs should throw when email validation API key is missing")
+    func getBulkValidationJobsShouldThrow() async throws {
+        let error = await #expect(throws: SendGridError.self) {
+            try await client.getBulkEmailValidationJobs()
+        }
+
+        #expect(error?.id?.isEmpty == false)
+    }
+
+    @Test("Validate email should throw when email validation API key is missing")
+    func validateEmailShouldThrow() async throws {
+        let error = await #expect(throws: SendGridError.self) {
+            try await client.validateEmail(validationRequest: .init(email: "some@email.com"))
+        }
+
+        #expect(error?.id?.isEmpty == false)
     }
 
     @Test("Upload CSV File")
@@ -212,6 +239,80 @@ struct SendGridKitTests {
         }
     }
 
+    @Test("Decode validate email response")
+    func decodeValidateEmailResponse() async throws {
+        let response = """
+            {
+              "result": {
+                "email": "cedric@fogowl.com",
+                "verdict": "Valid",
+                "score": 0.85021,
+                "local": "cedric",
+                "host": "fogowl.com",
+                "checks": {
+                  "domain": {
+                    "has_valid_address_syntax": true,
+                    "has_mx_or_a_record": true,
+                    "is_suspected_disposable_address": false
+                  },
+                  "local_part": {
+                    "is_suspected_role_address": false
+                  },
+                  "additional": {
+                    "has_known_bounces": false,
+                    "has_suspected_bounces": false
+                  }
+                },
+                "ip_address": "192.168.1.1"
+              }
+            }
+            """
+        let responseData = try JSONDecoder().decode(EmailValidationResponse.self, from: response.data(using: .utf8)!)
+        #expect(responseData.result.score == 0.85021)
+    }
+
+    @Test("Decode Get bulk Email Address")
+    func decodeGetBulkEmailAddress() async throws {
+        let response = """
+            {
+              "result": [
+                {
+                  "id": "01HV9ZZQAFEXW18KFEPTB9YD5E",
+                  "status": "Queued",
+                  "started_at": 1712954639,
+                  "finished_at": 0
+                }
+              ]
+            }
+            """
+        let responseData = try JSONDecoder().decode(BulkValidationJobResponse.self, from: response.data(using: .utf8)!)
+        #expect(responseData.result.count == 1)
+    }
+
+    @Test("Decode Get validation Email Address Job")
+    func decodeGetEmailAddressJob() async throws {
+        let response = """
+            {
+              "response": {
+                "value": {
+                  "result": {
+                    "id": "01HV9ZZQAFEXW18KFEPTB9YD5E",
+                    "status": "Queued",
+                    "segments": 0,
+                    "segments_processed": 0,
+                    "is_download_available": false,
+                    "started_at": 1712954639,
+                    "finished_at": 0,
+                    "errors": []
+                  }
+                }
+              }
+            }
+            """
+        let responseData = try JSONDecoder().decode(ValidationJobResponse.self, from: response.data(using: .utf8)!)
+        #expect(responseData.response.value.result.id == "01HV9ZZQAFEXW18KFEPTB9YD5E")
+    }
+
     @Test("Bulk Email Validation")
     func bulkValidateEmail() async throws {
         // Create a simple CSV with a few test emails
@@ -246,7 +347,7 @@ struct SendGridKitTests {
             let jobStatusResponse = try await client.checkBulkValidationStatus(jobId: jobId)
 
             // Verify job status properties
-            let result = jobStatusResponse.result
+            let result = jobStatusResponse.response.value.result
             _ = result.id
             _ = result.status
             _ = result.segmentsProcessed

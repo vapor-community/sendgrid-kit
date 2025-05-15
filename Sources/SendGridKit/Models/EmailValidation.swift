@@ -69,15 +69,33 @@ public struct EmailValidationResponse: Decodable, Sendable {
         public let host: String
 
         /// A suggested correction in the event of domain name typos (e.g., gmial.com)
-        public let suggestion: String
+        public let suggestion: String?
 
         /// Granular checks for email address validity.
         public let checks: ValidationChecks
+
+        /// The IP address associated with this email.
+        public let ipAddress: String?
+
+        /// The source of the validation, as per the API request.
+        public let source: String?
 
         public enum Verdict: String, Codable, Sendable {
             case valid = "Valid"
             case risky = "Risky"
             case invalid = "Invalid"
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case email
+            case verdict
+            case score
+            case local
+            case host
+            case suggestion
+            case checks
+            case source
+            case ipAddress = "ip_address"
         }
     }
 }
@@ -93,12 +111,6 @@ public struct ValidationChecks: Decodable, Sendable {
 
     /// Additional checks on the email address.
     public let additional: AdditionalInfo
-
-    /// The source of the validation, as per the API request.
-    public let source: String
-
-    /// The IP address associated with this email.
-    public let ipAddress: String
 
     public struct AdditionalInfo: Decodable, Sendable {
         /// Whether email sent to this address from your account has bounced.
@@ -141,8 +153,6 @@ public struct ValidationChecks: Decodable, Sendable {
         case domain
         case localPart = "local_part"
         case additional
-        case source
-        case ipAddress = "ip_address"
     }
 }
 
@@ -199,13 +209,27 @@ public struct BulkValidationUploadURLResponse: Decodable, Sendable {
 }
 
 /// The response from initiating a bulk email validation job after upload.
+public struct ValidationJobResponse: Decodable, Sendable {
+    /// The response structure containing the job creation status.
+    public let response: ValidationJobResponse
+
+    public struct ValidationJobResponse: Decodable, Sendable {
+        public let value: ValidationJobValue
+    }
+
+    public struct ValidationJobValue: Decodable, Sendable {
+        public let result: ValidationJobResult
+    }
+}
+
+/// The response from initiating a bulk email validation job after upload.
 public struct BulkValidationJobResponse: Decodable, Sendable {
     /// The response structure containing the job creation status.
-    public let result: BulkValidationJobResult
+    public let result: [ValidationJobResult]
 }
 
 /// The status result of a bulk email validation job.
-public struct BulkValidationJobResult: Decodable, Sendable {
+public struct ValidationJobResult: Decodable, Sendable {
     /// The unique identifier for the validation job.
     public let id: String
 
@@ -214,14 +238,14 @@ public struct BulkValidationJobResult: Decodable, Sendable {
 
     /// The total number of segments in the Bulk Email Address Validation Job.
     /// There are 1,500 email addresses per segment. The value is 0 until the Job status is Processing.
-    public let segments: Int
+    public let segments: Int?
 
     /// The number of segments processed at the time of the request.
     /// 100 segments process in parallel at a time.
-    public let segmentsProcessed: Int
+    public let segmentsProcessed: Int?
 
     /// Boolean indicating whether the results CSV file is available for download.
-    public let isDownloadAvailable: Bool
+    public let isDownloadAvailable: Bool?
 
     /// The ISO8601 timestamp when the Job was created.
     /// This is the time at which the upload request was sent to the upload_uri.
@@ -232,7 +256,7 @@ public struct BulkValidationJobResult: Decodable, Sendable {
 
     /// Array containing error messages related to the Bulk Email Address Validation Job.
     /// Array is empty if no errors ocurred.
-    public let errors: [SendGridError.Description]
+    public let errors: [SendGridError.Description]?
 
     /// CodingKeys for mapping JSON fields to struct properties
     private enum CodingKeys: String, CodingKey {
