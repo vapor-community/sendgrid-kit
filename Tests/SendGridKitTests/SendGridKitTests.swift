@@ -122,7 +122,7 @@ struct SendGridKitTests {
             if response.result.verdict == .valid {
                 print("Email is valid with score: \(response.result.score)")
             } else {
-                print("Email is invalid: \(response.result.suggestion)")
+                print("Email is invalid: \(response.result.verdict)")
             }
         } when: {
             credentialsAreInvalid
@@ -229,11 +229,12 @@ struct SendGridKitTests {
         let responseData = try JSONDecoder().decode(BulkValidationUploadURLResponse.self, from: response.data(using: .utf8)!)
 
         try await withKnownIssue {
-            let response = try await emailValidationClient.uploadBulkValidationFile(
+            let (success, jobId) = try await emailValidationClient.uploadBulkValidationFile(
                 fileData: csvData,
                 uploadResponse: responseData
             )
-            #expect(response.0 == true)
+            #expect(success)
+            #expect(!jobId.isEmpty)
         } when: {
             credentialsAreInvalid
         }
@@ -341,7 +342,7 @@ struct SendGridKitTests {
                 uploadResponse: uploadURLResponse
             )
 
-            #expect(uploadSuccess == true)
+            #expect(uploadSuccess)
 
             // Step 4: Check job status
             let jobStatusResponse = try await client.checkBulkValidationStatus(jobId: jobId)

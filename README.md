@@ -112,7 +112,7 @@ do {
     user3@example.com
     """
     guard let csvData = csvContent.data(using: .utf8) else {
-        throw NSError(domain: "CSVConversionError", code: 1)
+        throw SomeError.invalidCSV
     }
     
     // Step 2: Get an upload URL
@@ -126,7 +126,7 @@ do {
     )
     
     if !uploadSuccess {
-        throw NSError(domain: "UploadError", code: 2)
+        throw SomeError.uploadError
     }
     
     print("File uploaded successfully")
