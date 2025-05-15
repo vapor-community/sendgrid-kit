@@ -133,8 +133,8 @@ struct SendGridKitTests {
     func requestUploadURL() async throws {
         try await withKnownIssue {
             let response = try await emailValidationClient.getBulkValidationUploadURL(fileType: .csv)
-            #expect(response.uploadUri != "")
-            #expect(response.jobId != "")
+            #expect(!response.uploadUri.isEmpty)
+            #expect(!response.jobId.isEmpty)
         } when: {
             credentialsAreInvalid
         }
