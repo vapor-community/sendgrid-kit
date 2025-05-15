@@ -144,8 +144,8 @@ struct SendGridKitTests {
     func requestUploadURLForZipArchive() async throws {
         try await withKnownIssue {
             let response = try await emailValidationClient.getBulkValidationUploadURL(fileType: .zip)
-            #expect(response.uploadUri != "")
-            #expect(response.jobId != "")
+            #expect(!response.uploadUri.isEmpty)
+            #expect(!response.jobId.isEmpty)
         } when: {
             credentialsAreInvalid
         }
