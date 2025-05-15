@@ -145,7 +145,6 @@ public struct SendGridClient: Sendable {
     ///   - fileData: The data of the file to upload (CSV or ZIP).
     ///   - uploadResponse: The ``BulkValidationUploadURLResponse`` containing upload details.
     /// - Returns: `true` if the upload was successful, and the job ID.
-    @discardableResult
     public func uploadBulkValidationFile(fileData: Data, fileType: BulkValidationUploadURLRequest.FileType) async throws
         -> UploadBulkValidationFileResult
     {

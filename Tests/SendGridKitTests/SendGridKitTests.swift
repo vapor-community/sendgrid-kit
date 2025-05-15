@@ -120,9 +120,9 @@ struct SendGridKitTests {
 
             // Basic assertions
             if response.result.verdict == .valid {
-                print("Email is valid with score: \(response.result.score)")
+                #expect(response.result.ipAddress != nil)
             } else {
-                print("Email is invalid: \(response.result.verdict)")
+                #expect(!response.result.checks.domain.hasMXOrARecord)
             }
         } when: {
             credentialsAreInvalid
@@ -256,7 +256,7 @@ struct SendGridKitTests {
               ]
             }
             """
-        let responseData = try JSONDecoder().decode(BulkValidationJobResponse.self, from: response.data(using: .utf8)!)
+        let responseData = try JSONDecoder().decode(BulkEmailValidationJobResponse.self, from: response.data(using: .utf8)!)
         #expect(responseData.result.count == 1)
     }
 

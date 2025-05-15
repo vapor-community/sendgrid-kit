@@ -15,9 +15,9 @@ public struct BulkValidationUploadURLRequest: Encodable {
     /// The type of file that will be uploaded for bulk validation.
     public enum FileType: String, Codable, Sendable {
         /// A CSV file containing email addresses.
-        case csv = "csv"
+        case csv
         /// A ZIP file containing a CSV file with email addresses.
-        case zip = "zip"
+        case zip
     }
 
     /// CodingKeys for mapping JSON fields to struct properties
@@ -63,59 +63,53 @@ public struct ValidationJobResponse: Decodable, Sendable {
         public let value: ValidationJobValue
 
         public struct ValidationJobValue: Decodable, Sendable {
-            public let result: ValidationJobResult
+            public let result: Result
+
+            /// The status result of a bulk email validation job.
+            public struct Result: Decodable, Sendable {
+                /// The unique identifier for the validation job.
+                public let id: String
+
+                /// Status of the validation job (e.g., "Queued", "Processing", "Completed").
+                public let status: BuildEmailValidationStatus
+
+                /// The total number of segments in the Bulk Email Address Validation Job.
+                /// There are 1,500 email addresses per segment. The value is 0 until the Job status is Processing.
+                public let segments: Int?
+
+                /// The number of segments processed at the time of the request.
+                /// 100 segments process in parallel at a time.
+                public let segmentsProcessed: Int?
+
+                /// Boolean indicating whether the results CSV file is available for download.
+                public let isDownloadAvailable: Bool?
+
+                /// The ISO8601 timestamp when the Job was created.
+                /// This is the time at which the upload request was sent to the upload_uri.
+                public let startedAt: Date
+
+                /// The ISO8601 timestamp when the Job was finished.
+                public let finishedAt: Date?
+
+                /// Array containing error messages related to the Bulk Email Address Validation Job.
+                /// Array is empty if no errors ocurred.
+                public let errors: [BulkValidationError]?
+
+                public struct BulkValidationError: Decodable, Sendable {
+                    /// Description of the error encountered during execution of the Bulk Email Address Validation Job.
+                    public let message: String
+                }
+
+                /// CodingKeys for mapping JSON fields to struct properties
+                private enum CodingKeys: String, CodingKey {
+                    case id, status, segments, errors
+                    case segmentsProcessed = "segments_processed"
+                    case isDownloadAvailable = "is_download_available"
+                    case startedAt = "started_at"
+                    case finishedAt = "finished_at"
+                }
+            }
         }
-    }
-}
-
-/// The response from initiating a bulk email validation job after upload.
-public struct BulkValidationJobResponse: Decodable, Sendable {
-    /// The response structure containing the job creation status.
-    public let result: [ValidationJobResult]
-}
-
-/// The status result of a bulk email validation job.
-public struct ValidationJobResult: Decodable, Sendable {
-    /// The unique identifier for the validation job.
-    public let id: String
-
-    /// Status of the validation job (e.g., "Queued", "Processing", "Completed").
-    public let status: BuildEmailValidationStatus
-
-    /// The total number of segments in the Bulk Email Address Validation Job.
-    /// There are 1,500 email addresses per segment. The value is 0 until the Job status is Processing.
-    public let segments: Int?
-
-    /// The number of segments processed at the time of the request.
-    /// 100 segments process in parallel at a time.
-    public let segmentsProcessed: Int?
-
-    /// Boolean indicating whether the results CSV file is available for download.
-    public let isDownloadAvailable: Bool?
-
-    /// The ISO8601 timestamp when the Job was created.
-    /// This is the time at which the upload request was sent to the upload_uri.
-    public let startedAt: Date
-
-    /// The ISO8601 timestamp when the Job was finished.
-    public let finishedAt: Date?
-
-    /// Array containing error messages related to the Bulk Email Address Validation Job.
-    /// Array is empty if no errors ocurred.
-    public let errors: [BulkValidationError]?
-
-    public struct BulkValidationError: Decodable, Sendable {
-        /// Description of the error encountered during execution of the Bulk Email Address Validation Job.
-        public let message: String
-    }
-
-    /// CodingKeys for mapping JSON fields to struct properties
-    private enum CodingKeys: String, CodingKey {
-        case id, status, segments, errors
-        case segmentsProcessed = "segments_processed"
-        case isDownloadAvailable = "is_download_available"
-        case startedAt = "started_at"
-        case finishedAt = "finished_at"
     }
 }
 
