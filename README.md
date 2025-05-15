@@ -76,7 +76,7 @@ do {
     let validationResponse = try await sendGridClient.validateEmail(validationRequest: validationRequest)
     
     // Check if the email is valid
-    if validationResponse.result.valid {
+    if validationResponse.result.verdict == .valid {
         print("Email is valid with score: \(validationResponse.result.score)")
     } else {
         print("Email is invalid: \(validationResponse.result.reason ?? "Unknown reason")")
