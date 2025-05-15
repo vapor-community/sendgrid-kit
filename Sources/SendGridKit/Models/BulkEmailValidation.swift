@@ -27,23 +27,23 @@ public struct BulkValidationUploadURLRequest: Encodable {
 }
 
 /// The response containing upload details for bulk email validation.
-public struct BulkValidationUploadURLResponse: Decodable, Sendable {
+struct BulkValidationUploadURLResponse: Decodable, Sendable {
     /// The unique identifier for the validation job.
-    public let jobId: String
+    let jobId: String
 
     /// The URI where the file should be uploaded.
-    public let uploadUri: String
+    let uploadUri: String
 
     /// Headers that should be included in the upload request.
-    public let uploadHeaders: [UploadHeader]
+    let uploadHeaders: [UploadHeader]
 
     /// Header for the upload request.
-    public struct UploadHeader: Codable, Sendable {
+    struct UploadHeader: Codable, Sendable {
         /// The name of the header.
-        public let header: String
+        let header: String
 
         /// The value of the header.
-        public let value: String
+        let value: String
     }
 
     /// CodingKeys for mapping JSON fields to struct properties

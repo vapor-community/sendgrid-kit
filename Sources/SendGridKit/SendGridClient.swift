@@ -107,7 +107,7 @@ public struct SendGridClient: Sendable {
     ///
     /// - Parameter fileType: The type of file to be uploaded (CSV or ZIP).
     /// - Returns: A ``BulkValidationUploadURLResponse`` with the upload URL and details.
-    public func getBulkValidationUploadURL(fileType: BulkValidationUploadURLRequest.FileType) async throws
+    func getBulkValidationUploadURL(fileType: BulkValidationUploadURLRequest.FileType) async throws
         -> BulkValidationUploadURLResponse
     {
         guard let apiKey = self.emailValidationAPIKey else {
@@ -137,13 +137,21 @@ public struct SendGridClient: Sendable {
         throw try await self.decoder.decode(SendGridError.self, from: response.body.collect(upTo: 1024 * 1024))
     }
 
+    public typealias UploadBulkValidationFileResult = (status: Bool, jobID: String)
+
     /// Upload a file to the provided URL for bulk email validation.
     ///
     /// - Parameters:
     ///   - fileData: The data of the file to upload (CSV or ZIP).
     ///   - uploadResponse: The ``BulkValidationUploadURLResponse`` containing upload details.
     /// - Returns: `true` if the upload was successful, and the job ID.
-    public func uploadBulkValidationFile(fileData: Data, uploadResponse: BulkValidationUploadURLResponse) async throws -> (Bool, String) {
+    @discardableResult
+    public func uploadBulkValidationFile(fileData: Data, fileType: BulkValidationUploadURLRequest.FileType) async throws
+        -> UploadBulkValidationFileResult
+    {
+        // Request upload file URL
+        let uploadResponse = try await getBulkValidationUploadURL(fileType: fileType)
+
         // Create a request to the upload URL
         var request = HTTPClientRequest(url: uploadResponse.uploadUri)
         request.method = .PUT  // Default to PUT method for S3 uploads

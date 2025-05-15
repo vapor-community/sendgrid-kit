@@ -114,15 +114,11 @@ do {
     guard let csvData = csvContent.data(using: .utf8) else {
         throw SomeError.invalidCSV
     }
-    
-    // Step 2: Get an upload URL
-    let uploadURLResponse = try await sendGridClient.getBulkValidationUploadURL(fileType: .csv)
-    print("Got upload details with job ID: \(uploadURLResponse.jobId)")
-    
-    // Step 3: Upload the CSV file
+
+    // Step 2: Upload the CSV file
     let (uploadSuccess, jobId) = try await sendGridClient.uploadBulkValidationFile(
         fileData: csvData,
-        uploadResponse: uploadURLResponse
+        fileType: .csv
     )
     
     if !uploadSuccess {

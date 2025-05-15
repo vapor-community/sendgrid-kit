@@ -129,28 +129,6 @@ struct SendGridKitTests {
         }
     }
 
-    @Test("Request Upload URL for CSV")
-    func requestUploadURL() async throws {
-        try await withKnownIssue {
-            let response = try await emailValidationClient.getBulkValidationUploadURL(fileType: .csv)
-            #expect(!response.uploadUri.isEmpty)
-            #expect(!response.jobId.isEmpty)
-        } when: {
-            credentialsAreInvalid
-        }
-    }
-
-    @Test("Request Upload URL for Zip")
-    func requestUploadURLForZipArchive() async throws {
-        try await withKnownIssue {
-            let response = try await emailValidationClient.getBulkValidationUploadURL(fileType: .zip)
-            #expect(!response.uploadUri.isEmpty)
-            #expect(!response.jobId.isEmpty)
-        } when: {
-            credentialsAreInvalid
-        }
-    }
-
     @Test("Get Bulk validation jobs")
     func getBulkValidationJobs() async throws {
         try await withKnownIssue {
@@ -203,7 +181,7 @@ struct SendGridKitTests {
             """
         let csvData = csvContent.data(using: .utf8)!
 
-        let response = """
+        let _ = """
             {
               "job_id": "01H793APATD899ESMY25ZNPNCF",
               "upload_uri": "https://example.com/",
@@ -220,12 +198,10 @@ struct SendGridKitTests {
             }
             """
 
-        let responseData = try JSONDecoder().decode(BulkValidationUploadURLResponse.self, from: response.data(using: .utf8)!)
-
         try await withKnownIssue {
             let (success, jobId) = try await emailValidationClient.uploadBulkValidationFile(
                 fileData: csvData,
-                uploadResponse: responseData
+                fileType: .csv
             )
             #expect(success)
             #expect(!jobId.isEmpty)
@@ -320,23 +296,16 @@ struct SendGridKitTests {
         let csvData = csvContent.data(using: .utf8)!
 
         try await withKnownIssue {
-            // Step 1: Get an upload URL
-            let uploadURLResponse = try await emailValidationClient.getBulkValidationUploadURL(fileType: .csv)
 
-            // Verify upload URL response
-            #expect(!uploadURLResponse.jobId.isEmpty)
-            #expect(!uploadURLResponse.uploadUri.isEmpty)
-            #expect(!uploadURLResponse.uploadHeaders.isEmpty)
-
-            // Step 2: Upload the CSV file to start the validation job (simulated in this test)
+            // Step 1: Upload the CSV file to start the validation job (simulated in this test)
             let (uploadSuccess, jobId) = try await client.uploadBulkValidationFile(
                 fileData: csvData,
-                uploadResponse: uploadURLResponse
+                fileType: .csv
             )
 
             #expect(uploadSuccess)
 
-            // Step 4: Check job status
+            // Step 2: Check job status
             let jobStatusResponse = try await client.checkBulkValidationStatus(jobId: jobId)
 
             // Verify job status properties
