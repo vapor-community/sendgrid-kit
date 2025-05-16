@@ -131,8 +131,8 @@ public struct SendGridEmailValidationClient: Sendable {
     /// Check the status of a bulk email validation job.
     ///
     /// - Parameter jobId: The ID of the bulk validation job.
-    /// - Returns: A ``ValidationJobResponse`` with information about the job status.
-    public func checkBulkValidationStatus(jobId: String) async throws -> ValidationJobResponse {
+    /// - Returns: A ``BulkEmailValidationJob.Response.Value.Result`` with information about the job status.
+    public func checkBulkValidationStatus(jobId: String) async throws -> BulkEmailValidationJob.Response.Value.Result {
         var headers = HTTPHeaders()
         headers.add(name: "Authorization", value: "Bearer \(apiKey)")
         headers.add(name: "User-Agent", value: "Swift SendGridKit/3.0.0")
@@ -146,7 +146,8 @@ public struct SendGridEmailValidationClient: Sendable {
         // If the request is successful, decode the response
         if (200...299).contains(response.status.code) {
             let body = try await response.body.collect(upTo: 1024 * 1024)
-            return try self.decoder.decode(ValidationJobResponse.self, from: body)
+            let data = try self.decoder.decode(BulkEmailValidationJob.self, from: body)
+            return data.response.value.result
         }
 
         // Otherwise, decode the error

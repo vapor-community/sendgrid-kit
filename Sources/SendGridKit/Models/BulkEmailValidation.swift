@@ -55,14 +55,14 @@ struct BulkEmailValidationUploadURLResponse: Decodable, Sendable {
 }
 
 /// The response from initiating a bulk email validation job after upload.
-public struct ValidationJobResponse: Decodable, Sendable {
+public struct BulkEmailValidationJob: Decodable, Sendable {
     /// The response structure containing the job creation status.
-    public let response: JobResponse
+    public let response: Response
 
-    public struct JobResponse: Decodable, Sendable {
-        public let value: ValidationJobValue
+    public struct Response: Decodable, Sendable {
+        public let value: Value
 
-        public struct ValidationJobValue: Decodable, Sendable {
+        public struct Value: Decodable, Sendable {
             public let result: Result
 
             /// The status result of a bulk email validation job.

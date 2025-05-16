@@ -143,7 +143,7 @@ struct SendGridKitTests {
     func getBulkValidationJobStatus() async throws {
         try await withKnownIssue {
             let jobsResponse = try await emailValidationClient.checkBulkValidationStatus(jobId: "12345")
-            let errors = jobsResponse.response.value.result.errors
+            let errors = jobsResponse.errors
             #expect(errors?.isEmpty == true)
         } when: {
             credentialsAreInvalid
@@ -159,23 +159,6 @@ struct SendGridKitTests {
             test3@example.com
             """
         let csvData = csvContent.data(using: .utf8)!
-
-        let _ = """
-            {
-              "job_id": "01H793APATD899ESMY25ZNPNCF",
-              "upload_uri": "https://example.com/",
-              "upload_headers": [
-                {
-                  "header": "x-amz-server-side-encryption",
-                  "value": "aws:kms"
-                },
-                {
-                  "header": "content-type",
-                  "value": "text/csv"
-                }
-              ]
-            }
-            """
 
         try await withKnownIssue {
             let (success, jobId) = try await emailValidationClient.uploadBulkValidationFile(
@@ -259,7 +242,7 @@ struct SendGridKitTests {
               }
             }
             """
-        let responseData = try JSONDecoder().decode(ValidationJobResponse.self, from: response.data(using: .utf8)!)
+        let responseData = try JSONDecoder().decode(BulkEmailValidationJob.self, from: response.data(using: .utf8)!)
         #expect(responseData.response.value.result.id == "01HV9ZZQAFEXW18KFEPTB9YD5E")
     }
 
@@ -288,7 +271,7 @@ struct SendGridKitTests {
             let jobStatusResponse = try await emailValidationClient.checkBulkValidationStatus(jobId: jobId)
 
             // Verify job status properties
-            let result = jobStatusResponse.response.value.result
+            let result = jobStatusResponse
             #expect(!result.id.isEmpty)
             #expect(result.status == .processing)
             #expect(result.segmentsProcessed != nil)
