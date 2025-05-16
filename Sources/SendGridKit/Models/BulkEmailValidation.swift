@@ -1,11 +1,11 @@
 import struct Foundation.Date
 
 /// A request to get an upload URL for bulk email validation.
-public struct BulkValidationUploadURLRequest: Encodable {
+public struct BulkEmailValidationUploadURLRequest: Encodable {
     /// The file type that will be uploaded.
     public let fileType: FileType
 
-    /// Initialize a new `BulkValidationUploadURLRequest`
+    /// Initialize a new `BulkEmailValidationUploadURLRequest`
     ///
     /// - Parameter fileType: The file type that will be uploaded (CSV or ZIP)
     public init(fileType: FileType) {
@@ -27,7 +27,7 @@ public struct BulkValidationUploadURLRequest: Encodable {
 }
 
 /// The response containing upload details for bulk email validation.
-struct BulkValidationUploadURLResponse: Decodable, Sendable {
+struct BulkEmailValidationUploadURLResponse: Decodable, Sendable {
     /// The unique identifier for the validation job.
     let jobId: String
 
@@ -71,7 +71,7 @@ public struct ValidationJobResponse: Decodable, Sendable {
                 public let id: String
 
                 /// Status of the validation job (e.g., "Queued", "Processing", "Completed").
-                public let status: BuildEmailValidationStatus
+                public let status: BulkEmailValidationJobStatus
 
                 /// The total number of segments in the Bulk Email Address Validation Job.
                 /// There are 1,500 email addresses per segment. The value is 0 until the Job status is Processing.
@@ -113,7 +113,8 @@ public struct ValidationJobResponse: Decodable, Sendable {
     }
 }
 
-public enum BuildEmailValidationStatus: String, Codable, Sendable {
+/// BulkEmailValidationJobStatus
+public enum BulkEmailValidationJobStatus: String, Codable, Sendable {
     case initiated = "Initiated"
     case queued = "Queued"
     case ready = "Ready"
@@ -123,17 +124,17 @@ public enum BuildEmailValidationStatus: String, Codable, Sendable {
 }
 
 /// The result of a bulk email validation operation.
-public struct BulkEmailValidationJobResponse: Codable, Sendable {
+public struct BulkEmailValidationJobsResponse: Codable, Sendable {
     /// The response structure containing the validation results.
-    public let result: [BulkValidationJobResponse]
+    public let result: [Result]
 
     /// Nested response structure containing the results value.
-    public struct BulkValidationJobResponse: Codable, Sendable {
+    public struct Result: Codable, Sendable {
         /// The unique ID of the Bulk Email Address Validation Job.
         public let id: String
 
         /// The status of the Bulk Email Address Validation Job.
-        public let status: BuildEmailValidationStatus
+        public let status: BulkEmailValidationJobStatus
 
         /// The ISO8601 timestamp when the Job was created. This is the time at which the upload request was sent to the upload_uri.
         public let startedAt: Date

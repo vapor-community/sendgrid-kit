@@ -9,13 +9,13 @@ struct SendGridKitTests {
     // TODO: Replace with `false` when you have a valid API key
     let credentialsAreInvalid = true
 
-    let emailValidationClient: SendGridClient
+    let emailValidationClient: SendGridEmailValidationClient
 
     init() {
         // TODO: Replace with a valid API key to test
         client = SendGridClient(httpClient: HTTPClient.shared, apiKey: "YOUR-API-KEY")
-        emailValidationClient = SendGridClient(
-            httpClient: HTTPClient.shared, apiKey: "YOUR-API-KEY", emailValidationAPIKey: "YOUR-EMAIL-VALIDATION-API-KEY")
+        emailValidationClient = SendGridEmailValidationClient(
+            httpClient: .shared, apiKey: "YOUR-EMAIL-VALIDATION-API-KEY")
     }
 
     @Test("Send Email")
@@ -150,27 +150,6 @@ struct SendGridKitTests {
         }
     }
 
-    @Test("Get Bulk validation job status should throw when email validation API key is missing")
-    func getBulkValidationJobStatusShouldThrow() async throws {
-        await #expect(throws: SendGridError.self) {
-            try await client.checkBulkValidationStatus(jobId: "12345")
-        }
-    }
-
-    @Test("Get Bulk validation jobs should throw when email validation API key is missing")
-    func getBulkValidationJobsShouldThrow() async throws {
-        await #expect(throws: SendGridError.self) {
-            try await client.getBulkEmailValidationJobs()
-        }
-    }
-
-    @Test("Validate email should throw when email validation API key is missing")
-    func validateEmailShouldThrow() async throws {
-        await #expect(throws: SendGridError.self) {
-            try await client.validateEmail(validationRequest: .init(email: "some@email.com"))
-        }
-    }
-
     @Test("Upload CSV File")
     func uploadCSVFile() async throws {
         let csvContent = """
@@ -256,7 +235,7 @@ struct SendGridKitTests {
               ]
             }
             """
-        let responseData = try JSONDecoder().decode(BulkEmailValidationJobResponse.self, from: response.data(using: .utf8)!)
+        let responseData = try JSONDecoder().decode(BulkEmailValidationJobsResponse.self, from: response.data(using: .utf8)!)
         #expect(responseData.result.count == 1)
     }
 
@@ -298,7 +277,7 @@ struct SendGridKitTests {
         try await withKnownIssue {
 
             // Step 1: Upload the CSV file to start the validation job (simulated in this test)
-            let (uploadSuccess, jobId) = try await client.uploadBulkValidationFile(
+            let (uploadSuccess, jobId) = try await emailValidationClient.uploadBulkValidationFile(
                 fileData: csvData,
                 fileType: .csv
             )
@@ -306,7 +285,7 @@ struct SendGridKitTests {
             #expect(uploadSuccess)
 
             // Step 2: Check job status
-            let jobStatusResponse = try await client.checkBulkValidationStatus(jobId: jobId)
+            let jobStatusResponse = try await emailValidationClient.checkBulkValidationStatus(jobId: jobId)
 
             // Verify job status properties
             let result = jobStatusResponse.response.value.result

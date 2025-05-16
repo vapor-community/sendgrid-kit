@@ -20,10 +20,10 @@ public struct EmailValidationRequest: Encodable {
 /// The response from SendGrid's Email Validation API.
 public struct EmailValidationResponse: Decodable, Sendable {
     /// The overall verdict for the email address.
-    public let result: ValidationResult
+    public let result: Result
 
     /// The overall result of email validation.
-    public struct ValidationResult: Decodable, Sendable {
+    public struct Result: Decodable, Sendable {
 
         /// The email address that was validated.
         public let email: String
@@ -44,7 +44,7 @@ public struct EmailValidationResponse: Decodable, Sendable {
         public let suggestion: String?
 
         /// Granular checks for email address validity.
-        public let checks: ValidationChecks
+        public let checks: Checks
 
         /// The IP address associated with this email.
         public let ipAddress: String?
@@ -59,7 +59,7 @@ public struct EmailValidationResponse: Decodable, Sendable {
         }
 
         /// Various checks performed during email validation.
-        public struct ValidationChecks: Decodable, Sendable {
+        public struct Checks: Decodable, Sendable {
 
             /// Checks on the domain portion of the email address.
             public let domain: Domain

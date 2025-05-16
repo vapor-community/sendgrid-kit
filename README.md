@@ -68,12 +68,14 @@ SendGridKit supports SendGrid's Email Validation API, which helps verify the val
 ```swift
 import SendGridKit
 
+let sendGridClient = SendGridEmailValidationClient(httpClient: .shared, apiKey: "YOUR_API_KEY")
+
 // Create a validation request
 let validationRequest = EmailValidationRequest(email: "example@email.com")
 
 // Validate the email
 do {
-    let validationResponse = try await sendGridClient.validateEmail(validationRequest: validationRequest)
+    let validationResponse = try await sendGridClient.validateEmail(validationRequest)
     
     // Check if the email is valid
     if validationResponse.result.verdict == .valid {
@@ -103,6 +105,8 @@ For validating multiple email addresses at once, SendGridKit provides access to 
 import SendGridKit
 import Foundation
 
+let sendGridClient = SendGridEmailValidationClient(httpClient: .shared, apiKey: "YOUR_API_KEY")
+
 do {
     // Step 1: Create a CSV file with email addresses
     let csvContent = """
@@ -124,8 +128,6 @@ do {
     if !uploadSuccess {
         throw SomeError.uploadError
     }
-    
-    print("File uploaded successfully")
     
     // Step 4: Check job status (poll until completed)
     var jobStatusResponse = try await sendGridClient.checkBulkValidationStatus(jobId: jobId)
