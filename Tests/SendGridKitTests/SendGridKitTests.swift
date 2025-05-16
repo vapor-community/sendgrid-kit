@@ -113,7 +113,7 @@ struct SendGridKitTests {
         let validationRequest = EmailValidationRequest(email: "test@example.com", source: "unit_test")
 
         try await withKnownIssue {
-            let response = try await emailValidationClient.validateEmail(validationRequest: validationRequest)
+            let response = try await emailValidationClient.validateEmail(validationRequest)
 
             // Verify response properties exist
             #expect((0.0...1.0).contains(response.result.score))
