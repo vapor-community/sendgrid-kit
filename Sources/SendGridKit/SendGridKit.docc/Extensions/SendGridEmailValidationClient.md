@@ -20,7 +20,7 @@ do {
     if validationResponse.result?.verdict == .valid {
         print("Email is valid with score: \(validationResponse.result?.score)")
     } else {
-        print("Email is invalid: \(validationResponse.result?.reason ?? "Unknown reason")")
+        print("Email is invalid")
     }
     
     // Access detailed validation information
@@ -77,8 +77,7 @@ do {
         // Wait before checking again (implement your own backoff strategy)
         try? await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds
         
-        jobStatusResponse = try await sendGridClient.checkBulkEmailValidationJob(by: jobID)
-        jobStatus = jobStatusResponse.result
+        jobStatus = try await sendGridClient.checkBulkEmailValidationJob(by: jobID)
     }
 } catch {
     print("Bulk validation failed: \(error)")
