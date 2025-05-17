@@ -25,6 +25,16 @@ Send simple emails or leverage the full capabilities of [SendGrid's V3 API](http
 - ``TrackingSettings``
 - ``AdvancedSuppressionManager``
 
+### Email Address Validation
+
+- ``SendGridEmailValidationClient``
+- ``EmailValidationRequest``
+- ``EmailValidationResponse``
+- ``BulkEmailValidationUploadURLRequest``
+- ``BulkEmailValidationJobsResponse``
+- ``BulkEmailValidationJob``
+- ``BulkEmailValidationJobStatus``
+
 ### Errors
 
 - ``SendGridError``
