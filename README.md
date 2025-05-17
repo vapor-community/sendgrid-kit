@@ -61,6 +61,92 @@ let email = SendGridEmail(...)
 try await sendGridClient.send(email: email)
 ```
 
+### Email Validation API
+
+SendGridKit supports SendGrid's Email Validation API, which helps verify the validity of email addresses before sending:
+
+```swift
+import SendGridKit
+
+let sendGridClient = SendGridEmailValidationClient(httpClient: .shared, apiKey: "YOUR_API_KEY")
+
+// Create a validation request
+let validationRequest = EmailValidationRequest(email: "example@email.com")
+
+// Validate the email
+do {
+    let validationResponse = try await sendGridClient.validateEmail(validationRequest)
+    
+    // Check if the email is valid
+    if validationResponse.result.verdict == .valid {
+        print("Email is valid with score: \(validationResponse.result.score)")
+    } else {
+        print("Email is invalid: \(validationResponse.result.reason ?? "Unknown reason")")
+    }
+    
+    // Access detailed validation information
+    if validationResponse.checks.disposable {
+        print("Warning: This is a disposable email address")
+    }
+    
+    if validationResponse.checks.roleAccount {
+        print("Note: This is a role-based email address")
+    }
+} catch {
+    print("Validation failed: \(error)")
+}
+```
+
+#### Bulk Email Validation API
+
+For validating multiple email addresses at once, SendGridKit provides access to SendGrid's Bulk Email Validation API. This requires uploading a CSV file with email addresses:
+
+```swift
+import SendGridKit
+import Foundation
+
+let sendGridClient = SendGridEmailValidationClient(httpClient: .shared, apiKey: "YOUR_API_KEY")
+
+do {
+    // Step 1: Create a CSV file with email addresses
+    let csvContent = """
+    emails
+    user1@example.com
+    user2@example.com
+    user3@example.com
+    """
+    guard let csvData = csvContent.data(using: .utf8) else {
+        throw SomeError.invalidCSV
+    }
+
+    // Step 2: Upload the CSV file
+    let (uploadSuccess, jobId) = try await sendGridClient.uploadBulkValidationFile(
+        fileData: csvData,
+        fileType: .csv
+    )
+    
+    if !uploadSuccess {
+        throw SomeError.uploadError
+    }
+    
+    // Step 4: Check job status (poll until completed)
+    var jobStatusResponse = try await sendGridClient.checkBulkValidationStatus(jobId: jobId)
+    var jobStatus = jobStatusResponse.result
+    
+    while jobStatus.status != .done {
+        print("Job \(jobStatus.id) status: \(jobStatus.status) - \(jobStatus.segmentsProcessed)/\(jobStatus.segments) segments processed")
+        
+        // Wait before checking again (implement your own backoff strategy)
+        try? await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds
+        
+        jobStatusResponse = try await sendGridClient.checkBulkValidationStatus(jobId: jobId)
+        jobStatus = jobStatusResponse..result
+    }
+} catch {
+    print("Bulk validation failed: \(error)")
+}
+```
+
 ### Error handling
 
 If the request to the API failed for any reason a `SendGridError` is thrown, which has an `errors` property that contains an array of errors returned by the API.
