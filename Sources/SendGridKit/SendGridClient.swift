@@ -6,7 +6,7 @@ import NIOHTTP1
 
 /// A client for sending emails using the SendGrid API.
 public struct SendGridClient: Sendable {
-    private let baseURL: String
+    private let apiURL: String
     private let httpClient: HTTPClient
     private let apiKey: String
 
@@ -31,7 +31,7 @@ public struct SendGridClient: Sendable {
     public init(httpClient: HTTPClient, apiKey: String, forEU: Bool = false) {
         self.httpClient = httpClient
         self.apiKey = apiKey
-        self.baseURL = forEU ? "https://api.eu.sendgrid.com/v3" : "https://api.sendgrid.com/v3"
+        self.apiURL = forEU ? "https://api.eu.sendgrid.com/v3/mail/send" : "https://api.sendgrid.com/v3/mail/send"
     }
 
     /// Send an email using the SendGrid API.
@@ -43,7 +43,7 @@ public struct SendGridClient: Sendable {
         headers.add(name: "Content-Type", value: "application/json")
         headers.add(name: "User-Agent", value: "Swift SendGridKit/3.0.0")
 
-        var request = HTTPClientRequest(url: "\(self.baseURL)/mail/send")
+        var request = HTTPClientRequest(url: self.apiURL)
         request.method = .POST
         request.headers = headers
         request.body = try HTTPClientRequest.Body.bytes(self.encoder.encode(email))

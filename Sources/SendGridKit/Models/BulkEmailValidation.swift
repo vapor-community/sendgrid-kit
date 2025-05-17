@@ -1,18 +1,18 @@
 import struct Foundation.Date
 
 /// A request to get an upload URL for bulk email validation.
-public struct BulkEmailValidationUploadURLRequest: Encodable {
-    /// The file type that will be uploaded.
+public struct BulkEmailValidationUploadURLRequest: Codable {
+    /// The format of the file you wish to upload.
     public let fileType: FileType
 
-    /// Initialize a new `BulkEmailValidationUploadURLRequest`
+    /// Initialize a new ``BulkEmailValidationUploadURLRequest``
     ///
     /// - Parameter fileType: The file type that will be uploaded (CSV or ZIP)
     public init(fileType: FileType) {
         self.fileType = fileType
     }
 
-    /// The type of file that will be uploaded for bulk validation.
+    /// The format of the file you wish to upload.
     public enum FileType: String, Codable, Sendable {
         /// A CSV file containing email addresses.
         case csv
@@ -20,87 +20,94 @@ public struct BulkEmailValidationUploadURLRequest: Encodable {
         case zip
     }
 
-    /// CodingKeys for mapping JSON fields to struct properties
     private enum CodingKeys: String, CodingKey {
         case fileType = "file_type"
     }
 }
 
 /// The response containing upload details for bulk email validation.
-struct BulkEmailValidationUploadURLResponse: Decodable, Sendable {
-    /// The unique identifier for the validation job.
-    let jobId: String
+struct BulkEmailValidationUploadURLResponse: Codable, Sendable {
+    /// The unique ID of the Bulk Email Address Validation Job.
+    let jobID: String?
 
-    /// The URI where the file should be uploaded.
-    let uploadUri: String
+    /// The URI to use for the request to upload your list of email addresses.
+    let uploadURI: String?
 
-    /// Headers that should be included in the upload request.
-    let uploadHeaders: [UploadHeader]
+    /// Array containing headers and header values.
+    let uploadHeaders: [UploadHeader]?
 
     /// Header for the upload request.
     struct UploadHeader: Codable, Sendable {
-        /// The name of the header.
-        let header: String
+        /// The name of the header that must be included in the upload request.
+        let header: String?
 
-        /// The value of the header.
-        let value: String
+        /// The value of the header that must be included in the upload request.
+        let value: String?
     }
 
-    /// CodingKeys for mapping JSON fields to struct properties
     private enum CodingKeys: String, CodingKey {
-        case jobId = "job_id"
-        case uploadUri = "upload_uri"
+        case jobID = "job_id"
+        case uploadURI = "upload_uri"
         case uploadHeaders = "upload_headers"
     }
 }
 
-/// The response from initiating a bulk email validation job after upload.
-public struct BulkEmailValidationJob: Decodable, Sendable {
-    /// The response structure containing the job creation status.
-    public let response: Response
+/// A response that returns a specific Bulk Email Validation Job.
+///
+/// You can use this endpoint to check on the progress of a Job.
+public struct BulkEmailValidationJob: Codable, Sendable {
+    /// A response that returns a specific Bulk Email Validation Job.
+    public let response: Response?
 
-    public struct Response: Decodable, Sendable {
-        public let value: Value
+    /// A response that returns a specific Bulk Email Validation Job.
+    public struct Response: Codable, Sendable {
+        public let value: Value?
 
-        public struct Value: Decodable, Sendable {
-            public let result: Result
+        public struct Value: Codable, Sendable {
+            /// The status of a specific Bulk Email Validation Job.
+            public let result: Result?
 
-            /// The status result of a bulk email validation job.
-            public struct Result: Decodable, Sendable {
-                /// The unique identifier for the validation job.
-                public let id: String
+            /// The status of a specific Bulk Email Validation Job.
+            public struct Result: Codable, Sendable {
+                /// The unique ID of the Bulk Email Address Validation Job.
+                public let id: String?
 
-                /// Status of the validation job (e.g., "Queued", "Processing", "Completed").
-                public let status: BulkEmailValidationJobStatus
+                /// The status of the Bulk Email Address Validation Job.
+                public let status: BulkEmailValidationJobStatus?
 
                 /// The total number of segments in the Bulk Email Address Validation Job.
-                /// There are 1,500 email addresses per segment. The value is 0 until the Job status is Processing.
+                ///
+                /// There are 1,500 email addresses per segment.
+                /// The value is 0 until the Job status is ``BulkEmailValidationJobStatus/processing``.
                 public let segments: Int?
 
                 /// The number of segments processed at the time of the request.
+                ///
                 /// 100 segments process in parallel at a time.
                 public let segmentsProcessed: Int?
 
                 /// Boolean indicating whether the results CSV file is available for download.
                 public let isDownloadAvailable: Bool?
 
-                /// The ISO8601 timestamp when the Job was created.
-                /// This is the time at which the upload request was sent to the upload_uri.
-                public let startedAt: Date
+                /// The date when the Job was created.
+                ///
+                /// This is the time at which the upload request was sent to the `upload_uri`.
+                public let startedAt: Date?
 
-                /// The ISO8601 timestamp when the Job was finished.
+                /// The date when the Job was finished.
                 public let finishedAt: Date?
 
                 /// Array containing error messages related to the Bulk Email Address Validation Job.
+                ///
                 /// Array is empty if no errors ocurred.
                 public let errors: [BulkValidationError]?
 
-                public struct BulkValidationError: Decodable, Sendable {
+                /// Error message related to the Bulk Email Address Validation Job.
+                public struct BulkValidationError: Codable, Sendable {
                     /// Description of the error encountered during execution of the Bulk Email Address Validation Job.
-                    public let message: String
+                    public let message: String?
                 }
 
-                /// CodingKeys for mapping JSON fields to struct properties
                 private enum CodingKeys: String, CodingKey {
                     case id, status, segments, errors
                     case segmentsProcessed = "segments_processed"
@@ -113,7 +120,7 @@ public struct BulkEmailValidationJob: Decodable, Sendable {
     }
 }
 
-/// BulkEmailValidationJobStatus
+/// The status of the Bulk Email Address Validation Job.
 public enum BulkEmailValidationJobStatus: String, Codable, Sendable {
     case initiated = "Initiated"
     case queued = "Queued"
@@ -123,23 +130,23 @@ public enum BulkEmailValidationJobStatus: String, Codable, Sendable {
     case error = "Error"
 }
 
-/// The result of a bulk email validation operation.
+/// A response containing a list of all of a user's Bulk Email Validation Jobs.
 public struct BulkEmailValidationJobsResponse: Codable, Sendable {
-    /// The response structure containing the validation results.
-    public let result: [Result]
+    /// The result of the response, containing an array of all of the user's Bulk Email Validation Jobs.
+    public let result: [Result]?
 
-    /// Nested response structure containing the results value.
+    /// A user's Bulk Email Validation Job.
     public struct Result: Codable, Sendable {
         /// The unique ID of the Bulk Email Address Validation Job.
-        public let id: String
+        public let id: String?
 
         /// The status of the Bulk Email Address Validation Job.
-        public let status: BulkEmailValidationJobStatus
+        public let status: BulkEmailValidationJobStatus?
 
-        /// The ISO8601 timestamp when the Job was created. This is the time at which the upload request was sent to the upload_uri.
-        public let startedAt: Date
+        /// The date when the Job was created. This is the time at which the upload request was sent to the `upload_uri`.
+        public let startedAt: Date?
 
-        /// The ISO8601 timestamp when the Job was finished.
+        /// The date when the Job was finished.
         public let finishedAt: Date?
 
         private enum CodingKeys: String, CodingKey {
